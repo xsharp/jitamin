@@ -20,6 +20,23 @@ use Jitamin\Core\Security\OAuthAuthenticationProviderInterface;
 class OAuthController extends BaseController
 {
     /**
+     * Unlink external account.
+     */
+    public function unlink()
+    {
+        $backend = $this->request->getStringParam('backend');
+        $this->checkCSRFParam();
+
+        if ($this->authenticationManager->getProvider($backend)->unlink($this->userSession->getId())) {
+            $this->flash->success(t('Your external account is not linked anymore to your profile.'));
+        } else {
+            $this->flash->failure(t('Unable to unlink your external account.'));
+        }
+
+        $this->response->redirect($this->helper->url->to('Profile/ProfileController', 'external', ['user_id' => $this->userSession->getId()]));
+    }
+
+    /**
      * Redirect to the provider if no code received.
      *
      * @param string $provider
@@ -83,23 +100,6 @@ class OAuthController extends BaseController
     }
 
     /**
-     * Unlink external account.
-     */
-    public function unlink()
-    {
-        $backend = $this->request->getStringParam('backend');
-        $this->checkCSRFParam();
-
-        if ($this->authenticationManager->getProvider($backend)->unlink($this->userSession->getId())) {
-            $this->flash->success(t('Your external account is not linked anymore to your profile.'));
-        } else {
-            $this->flash->failure(t('Unable to unlink your external account.'));
-        }
-
-        $this->response->redirect($this->helper->url->to('Profile/ProfileController', 'external', ['user_id' => $this->userSession->getId()]));
-    }
-
-    /**
      * Authenticate the account.
      *
      * @param string $providerName
@@ -120,7 +120,7 @@ class OAuthController extends BaseController
      */
     protected function authenticationFailure($message)
     {
-        $this->response->html($this->helper->layout->app('auth/index', [
+        $this->response->html($this->helper->layout->app('auth/login', [
             'errors'    => ['login' => $message],
             'values'    => [],
             'no_layout' => true,

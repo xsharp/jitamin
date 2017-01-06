@@ -41,7 +41,7 @@ class ProfileController extends BaseController
             'title'  => $user['name'] ?: $user['username'],
             'events' => $this->helper->projectActivity->searchEvents('creator:'.$user['username'], 20),
             'user'   => $user,
-        ]));
+        ], ''));
     }
 
     /**
@@ -54,7 +54,7 @@ class ProfileController extends BaseController
             'user'      => $user,
             'timezones' => $this->timezoneModel->getTimezones(true),
             'languages' => $this->languageModel->getLanguages(true),
-        ]));
+        ], ''));
     }
 
     /**
@@ -75,7 +75,7 @@ class ProfileController extends BaseController
         $this->response->html($this->helper->layout->profile('profile/timesheet', [
             'subtask_paginator' => $subtask_paginator,
             'user'              => $user,
-        ]));
+        ], ''));
     }
 
     /**
@@ -87,7 +87,7 @@ class ProfileController extends BaseController
         $this->response->html($this->helper->layout->profile('profile/password_reset', [
             'tokens' => $this->passwordResetModel->getAll($user['id']),
             'user'   => $user,
-        ]));
+        ], ''));
     }
 
     /**
@@ -99,7 +99,7 @@ class ProfileController extends BaseController
         $this->response->html($this->helper->layout->profile('profile/last', [
             'last_logins' => $this->lastLoginModel->getAll($user['id']),
             'user'        => $user,
-        ]));
+        ], ''));
     }
 
     /**
@@ -111,7 +111,7 @@ class ProfileController extends BaseController
         $this->response->html($this->helper->layout->profile('profile/sessions', [
             'sessions' => $this->rememberMeSessionModel->getAll($user['id']),
             'user'     => $user,
-        ]));
+        ], ''));
     }
 
     /**
@@ -270,22 +270,48 @@ class ProfileController extends BaseController
             'values'     => $values,
             'errors'     => $errors,
             'user'       => $user,
-            'skins'      => $this->skinModel->getSkins(true),
-            'layouts'    => $this->skinModel->getLayouts(true),
-            'dashboards' => $this->skinModel->getDashboards(true),
-            'timezones'  => $this->timezoneModel->getTimezones(true),
-            'languages'  => $this->languageModel->getLanguages(true),
             'roles'      => $this->role->getApplicationRoles(),
         ]));
     }
 
     /**
-     * Save user information.
+     * Display a form to edit user preferences.
+     *
+     * @param array $values
+     * @param array $errors
+     *
+     * @throws \Jitamin\Core\Controller\AccessForbiddenException
+     * @throws \Jitamin\Core\Controller\PageNotFoundException
      */
-    public function store()
+    public function preferences(array $values = [], array $errors = [])
+    {
+        $user = $this->getUser();
+
+        if (empty($values)) {
+            $values = $user;
+            unset($values['password']);
+        }
+
+        return $this->response->html($this->helper->layout->profile('profile/preferences', [
+            'values'     => $values,
+            'errors'     => $errors,
+            'user'       => $user,
+            'skins'      => $this->skinModel->getSkins(true),
+            'layouts'    => $this->skinModel->getLayouts(true),
+            'dashboards' => $this->skinModel->getDashboards(true),
+            'timezones'  => $this->timezoneModel->getTimezones(true),
+            'languages'  => $this->languageModel->getLanguages(true),
+        ]));
+    }
+
+    /**
+     * Update user information.
+     */
+    public function update()
     {
         $user = $this->getUser();
         $values = $this->request->getValues();
+        $redirect = $this->request->getStringParam('redirect', 'edit');
 
         if (!$this->userSession->isAdmin()) {
             if (isset($values['role'])) {
@@ -302,7 +328,7 @@ class ProfileController extends BaseController
                 $this->flash->failure(t('Unable to update your user.'));
             }
 
-            return $this->response->redirect($this->helper->url->to('Profile/ProfileController', 'show', ['user_id' => $user['id']]));
+            return $this->response->redirect($this->helper->url->to('Profile/ProfileController', $redirect, ['user_id' => $user['id']]));
         }
 
         return $this->show($values, $errors);

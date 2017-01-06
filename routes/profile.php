@@ -19,6 +19,8 @@ return [
 'user/show/:user_id/sessions'        => 'Profile/ProfileController@sessions',
 'user/show/:user_id/password-resets' => 'Profile/ProfileController@passwordReset',
 'user/:user_id/edit'                 => 'Profile/ProfileController@edit',
+'user/:user_id/preferences'          => 'Profile/ProfileController@preferences',
+'user/:user_id/update/:redirect'     => 'Profile/ProfileController@update',
 'user/:user_id/password'             => 'Profile/ProfileController@changePassword',
 'user/:user_id/share'                => 'Profile/ProfileController@share',
 'user/:user_id/notifications'        => 'Profile/ProfileController@notifications',
@@ -27,8 +29,11 @@ return [
 'user/:user_id/api'                  => 'Profile/ProfileController@api',
 
 'user/:user_id/2fa'                => 'Profile/TwoFactorController@index',
-'user/:user_id/avatar'             => 'AvatarFileController@show',
-'user/:user_id/avatar/:size/image' => 'AvatarFileController@image',
+'user/:user_id/2fa/check'          => 'Profile/TwoFactorController@check',
+'user/:user_id/2fa/show'           => 'Profile/TwoFactorController@show',
+'profile/2fa/code'                 => 'Profile/TwoFactorController@code',
+'user/:user_id/avatar'             => 'Profile/AvatarController@show',
+'user/:user_id/avatar/:size/image' => 'Profile/AvatarController@image',
 
 'user/ajax/status' => 'Profile/UserAjaxController@status',
 

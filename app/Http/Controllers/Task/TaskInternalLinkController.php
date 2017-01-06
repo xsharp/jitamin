@@ -20,24 +20,6 @@ use Jitamin\Core\Controller\PageNotFoundException;
 class TaskInternalLinkController extends BaseController
 {
     /**
-     * Get the current link.
-     *
-     * @throws PageNotFoundException
-     *
-     * @return array
-     */
-    private function getTaskLink()
-    {
-        $link = $this->taskLinkModel->getById($this->request->getIntegerParam('link_id'));
-
-        if (empty($link)) {
-            throw new PageNotFoundException();
-        }
-
-        return $link;
-    }
-
-    /**
      * Creation form.
      *
      * @param array $values
@@ -50,7 +32,7 @@ class TaskInternalLinkController extends BaseController
     {
         $task = $this->getTask();
 
-        $this->response->html($this->template->render('task_internal_link/create', [
+        $this->response->html($this->template->render('task/internal_link/create', [
             'values' => $values,
             'errors' => $errors,
             'task'   => $task,
@@ -102,7 +84,7 @@ class TaskInternalLinkController extends BaseController
             $values['title'] = '#'.$opposite_task['id'].' - '.$opposite_task['title'];
         }
 
-        $this->response->html($this->template->render('task_internal_link/edit', [
+        $this->response->html($this->template->render('task/internal_link/edit', [
             'values'    => $values,
             'errors'    => $errors,
             'task_link' => $task_link,
@@ -142,7 +124,7 @@ class TaskInternalLinkController extends BaseController
         $task = $this->getTask();
         $link = $this->getTaskLink();
 
-        $this->response->html($this->template->render('task_internal_link/remove', [
+        $this->response->html($this->template->render('task/internal_link/remove', [
             'link' => $link,
             'task' => $task,
         ]));
@@ -163,5 +145,23 @@ class TaskInternalLinkController extends BaseController
         }
 
         $this->response->redirect($this->helper->url->to('Task/TaskController', 'show', ['task_id' => $task['id'], 'project_id' => $task['project_id']]));
+    }
+
+    /**
+     * Get the current link.
+     *
+     * @throws PageNotFoundException
+     *
+     * @return array
+     */
+    protected function getTaskLink()
+    {
+        $link = $this->taskLinkModel->getById($this->request->getIntegerParam('link_id'));
+
+        if (empty($link)) {
+            throw new PageNotFoundException();
+        }
+
+        return $link;
     }
 }

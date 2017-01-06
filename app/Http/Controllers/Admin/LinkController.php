@@ -20,24 +20,6 @@ use Jitamin\Core\Controller\PageNotFoundException;
 class LinkController extends BaseController
 {
     /**
-     * Get the current link.
-     *
-     * @throws PageNotFoundException
-     *
-     * @return array
-     */
-    private function getLink()
-    {
-        $link = $this->linkModel->getById($this->request->getIntegerParam('link_id'));
-
-        if (empty($link)) {
-            throw new PageNotFoundException();
-        }
-
-        return $link;
-    }
-
-    /**
      * List of links.
      *
      * @param array $values
@@ -45,11 +27,25 @@ class LinkController extends BaseController
      */
     public function index(array $values = [], array $errors = [])
     {
-        $this->response->html($this->helper->layout->setting('admin/link/index', [
+        $this->response->html($this->helper->layout->admin('admin/link/index', [
             'links'  => $this->linkModel->getMergedList(),
             'values' => $values,
             'errors' => $errors,
-            'title'  => t('Settings').' &raquo; '.t('Task\'s links'),
+            'title'  => t('Task\'s links'),
+        ], 'admin/link/subside'));
+    }
+
+    /**
+     * Display a form to create a new tag.
+     *
+     * @param array $values
+     * @param array $errors
+     */
+    public function create(array $values = [], array $errors = [])
+    {
+        $this->response->html($this->template->render('admin/link/create', [
+            'values' => $values,
+            'errors' => $errors,
         ]));
     }
 
@@ -87,7 +83,7 @@ class LinkController extends BaseController
         $link = $this->getLink();
         $link['label'] = t($link['label']);
 
-        $this->response->html($this->helper->layout->setting('admin/link/edit', [
+        $this->response->html($this->helper->layout->admin('admin/link/edit', [
             'values' => $values ?: $link,
             'errors' => $errors,
             'labels' => $this->linkModel->getList($link['id']),
@@ -124,7 +120,7 @@ class LinkController extends BaseController
     {
         $link = $this->getLink();
 
-        $this->response->html($this->helper->layout->setting('admin/link/remove', [
+        $this->response->html($this->helper->layout->admin('admin/link/remove', [
             'link'  => $link,
             'title' => t('Remove a link'),
         ]));
@@ -145,5 +141,23 @@ class LinkController extends BaseController
         }
 
         $this->response->redirect($this->helper->url->to('Admin/LinkController', 'index'));
+    }
+
+    /**
+     * Get the current link.
+     *
+     * @throws PageNotFoundException
+     *
+     * @return array
+     */
+    protected function getLink()
+    {
+        $link = $this->linkModel->getById($this->request->getIntegerParam('link_id'));
+
+        if (empty($link)) {
+            throw new PageNotFoundException();
+        }
+
+        return $link;
     }
 }

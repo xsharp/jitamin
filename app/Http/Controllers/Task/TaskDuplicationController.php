@@ -40,7 +40,7 @@ class TaskDuplicationController extends BaseController
             }
         }
 
-        return $this->response->html($this->template->render('task_duplication/duplicate', [
+        return $this->response->html($this->template->render('task/duplication/duplicate', [
             'task' => $task,
         ]));
     }
@@ -70,7 +70,7 @@ class TaskDuplicationController extends BaseController
             $this->flash->failure(t('Unable to update your task.'));
         }
 
-        return $this->chooseDestination($task, 'task_duplication/move');
+        return $this->chooseDestination($task, 'task/duplication/move');
     }
 
     /**
@@ -100,7 +100,7 @@ class TaskDuplicationController extends BaseController
             $this->flash->failure(t('Unable to create your task.'));
         }
 
-        return $this->chooseDestination($task, 'task_duplication/copy');
+        return $this->chooseDestination($task, 'task/duplication/copy');
     }
 
     /**
@@ -109,7 +109,7 @@ class TaskDuplicationController extends BaseController
      * @param array  $task
      * @param string $template
      */
-    private function chooseDestination(array $task, $template)
+    protected function chooseDestination(array $task, $template)
     {
         $values = [];
         $projects_list = $this->projectUserRoleModel->getActiveProjectsByUser($this->userSession->getId());

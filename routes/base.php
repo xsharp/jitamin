@@ -12,26 +12,13 @@
 return [
 
 // WebNotification routes
-'notification/:user_id/:notification_id' => 'WebNotificationController@redirect',
+'notification/:user_id/:notification_id'        => 'WebNotificationController@redirect',
+'notification/:user_id/:notification_id/remove' => 'WebNotificationController@remove',
+'notifications/:user_id/flush'                  => 'WebNotificationController@flush',
 
 // Search routes
 'search'          => 'SearchController@index',
 'search/activity' => 'SearchController@activity',
-
-// Exports
-'export/tasks/:project_id'       => 'ExportController@tasks',
-'export/subtasks/:project_id'    => 'ExportController@subtasks',
-'export/transitions/:project_id' => 'ExportController@transitions',
-'export/summary/:project_id'     => 'ExportController@summary',
-
-// Analytics routes
-'analytics/tasks/:project_id'                => 'AnalyticController@taskDistribution',
-'analytics/users/:project_id'                => 'AnalyticController@userDistribution',
-'analytics/cfd/:project_id'                  => 'AnalyticController@cfd',
-'analytics/burndown/:project_id'             => 'AnalyticController@burndown',
-'analytics/average-time-column/:project_id'  => 'AnalyticController@averageTimeByColumn',
-'analytics/lead-cycle-time/:project_id'      => 'AnalyticController@leadAndCycleTime',
-'analytics/estimated-spent-time/:project_id' => 'AnalyticController@compareHours',
 
 // Calendar routes
 'calendar/:project_id' => 'CalendarController@show',
@@ -40,11 +27,6 @@ return [
 // Listing routes
 'list/:project_id' => 'Task/TaskController@index',
 'l/:project_id'    => 'Task/TaskListController@show',
-
-// Gantt routes
-'gantt/:project_id'               => 'Task/TaskGanttController@show',
-'gantt/:project_id/sort/:sorting' => 'Task/TaskGanttController@show',
-'gantt/:project_id/create'        => 'Task/TaskGanttController@create',
 
 // Feed routes
 'feed/project/:token' => 'FeedController@project',

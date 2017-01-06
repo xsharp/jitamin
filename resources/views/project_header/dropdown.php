@@ -17,7 +17,7 @@
                 <i class="fa fa-columns"></i> <a href="#" class="filter-toggle-scrolling" title="<?= t('Keyboard shortcut: "%s"', 'c') ?>"><?= t('Compact view') ?></a>
             </span>
             <span class="filter-wide" style="display: none">
-                <i class="fa fa-arrows-h"></i> <a href="#" class="filter-toggle-scrolling" title="<?= t('Keyboard shortcut: "%s"', 'c') ?>"><?= t('Horizontal scrolling') ?></a>
+                <i class="fa fa-arrows-h"></i> <a href="#" class="filter-toggle-scrolling" title="<?= t('Keyboard shortcut: "%s"', 'c') ?>"><?= t('Wide view') ?></a>
             </span>
         </li>
         <?php endif ?>
@@ -25,7 +25,7 @@
         <?php if ($this->user->hasProjectAccess('Task/TaskController', 'create', $project['id'])): ?>
             <li>
                 <i class="fa fa-plus"></i>
-                <?= $this->url->link(t('Add a new task'), 'Task/TaskController', 'create', ['project_id' => $project['id']], false, 'popover') ?>
+                <?= $this->url->link(t('Add a new task'), 'Task/TaskController', 'create', ['project_id' => $project['id']], false, 'popover large') ?>
             </li>
         <?php endif ?>
 
@@ -46,10 +46,10 @@
         </li>
         <?php endif ?>
 
-        <?php if ($this->user->hasProjectAccess('CustomFilterController', 'index', $project['id'])): ?>
+        <?php if ($this->user->hasProjectAccess('Project/CustomFilterController', 'index', $project['id'])): ?>
             <li>
                 <i class="fa fa-filter"></i>
-                <?= $this->url->link(t('Custom filters'), 'CustomFilterController', 'index', ['project_id' => $project['id']]) ?>
+                <?= $this->url->link(t('Custom filters'), 'Project/CustomFilterController', 'index', ['project_id' => $project['id']]) ?>
             </li>
         <?php endif ?>
 
@@ -62,31 +62,31 @@
 
         <?= $this->hook->render('template:project:dropdown', ['project' => $project]) ?>
 
-        <?php if ($this->user->hasProjectAccess('AnalyticController', 'taskDistribution', $project['id'])): ?>
+        <?php if ($this->user->hasProjectAccess('Project/AnalyticController', 'taskDistribution', $project['id'])): ?>
             <li>
                 <i class="fa fa-line-chart"></i>
-                <?= $this->url->link(t('Analytics'), 'AnalyticController', 'taskDistribution', ['project_id' => $project['id']]) ?>
+                <?= $this->url->link(t('Analytics'), 'Project/AnalyticController', 'taskDistribution', ['project_id' => $project['id']]) ?>
             </li>
         <?php endif ?>
 
-        <?php if ($this->user->hasProjectAccess('ExportController', 'tasks', $project['id'])): ?>
+        <?php if ($this->user->hasProjectAccess('Project/ExportController', 'tasks', $project['id'])): ?>
             <li>
                 <i class="fa fa-upload"></i>
-                <?= $this->url->link(t('Exports'), 'ExportController', 'tasks', ['project_id' => $project['id']]) ?>
+                <?= $this->url->link(t('Exports'), 'Project/ExportController', 'tasks', ['project_id' => $project['id']]) ?>
             </li>
         <?php endif ?>
 
-        <?php if ($this->user->hasProjectAccess('Task/TaskImportController', 'tasks', $project['id'])): ?>
+        <?php if ($this->user->hasProjectAccess('Project/ImportController', 'tasks', $project['id'])): ?>
             <li>
                 <i class="fa fa-download"></i>
-                <?= $this->url->link(t('Imports'), 'Task/TaskImportController', 'show', ['project_id' => $project['id']]) ?>
+                <?= $this->url->link(t('Imports'), 'Project/ImportController', 'show', ['project_id' => $project['id']]) ?>
             </li>
         <?php endif ?>
 
-        <?php if ($this->user->hasProjectAccess('Project/ProjectController', 'edit', $project['id'])): ?>
+        <?php if ($this->user->hasProjectAccess('Manage/ProjectSettingsController', 'edit', $project['id'])): ?>
             <li>
                 <i class="fa fa-cog"></i>
-                <?= $this->url->link(t('Settings'), 'Project/ProjectSettingsController', 'show', ['project_id' => $project['id']]) ?>
+                <?= $this->url->link(t('Settings'), 'Manage/ProjectSettingsController', 'edit', ['project_id' => $project['id']]) ?>
             </li>
         <?php endif ?>
     </ul>

@@ -11,9 +11,6 @@
 
 return [
 
-// Import routes
-'project/:project_id/import' => 'Task/TaskImportController@show',
-
 // Task routes
 'project/:project_id/task/:task_id' => 'Task/TaskController@show',
 't/:task_id'                        => 'Task/TaskController@show',
@@ -36,6 +33,9 @@ return [
 'project/:project_id/task/:task_id/link/create'    => 'Task/TaskInternalLinkController@create',
 
 'project/:project_id/task/:task_id/activities'     => 'ActivityController@task',
-'project/:project_id/task/:task_id/comment/create' => 'CommentController@create',
+'project/:project_id/task/:task_id/comment/create' => 'Task/CommentController@create',
+
+'task/create' => 'Task/TaskSimpleController@create',
+'task/store'  => 'Task/TaskSimpleController@store',
 
 ];

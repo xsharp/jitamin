@@ -9,7 +9,7 @@
         <?php endif ?>
         <li>
             <i class="fa fa-pencil-square-o fa-fw"></i>
-            <?= $this->url->link(t('Edit the task'), 'Task/TaskController', 'edit', ['task_id' => $task['id'], 'project_id' => $task['project_id']], false, 'popover') ?>
+            <?= $this->url->link(t('Edit the task'), 'Task/TaskController', 'edit', ['task_id' => $task['id'], 'project_id' => $task['project_id']], false, 'popover large') ?>
         </li>
         <li>
             <i class="fa fa-plus fa-fw"></i>
@@ -21,7 +21,7 @@
         </li>
         <li>
             <i class="fa fa-comment-o fa-fw"></i>
-            <?= $this->url->link(t('Add a comment'), 'CommentController', 'create', ['task_id' => $task['id'], 'project_id' => $task['project_id']], false, 'popover') ?>
+            <?= $this->url->link(t('Add a comment'), 'Task/CommentController', 'create', ['task_id' => $task['id'], 'project_id' => $task['project_id']], false, 'popover small') ?>
         </li>
         <li>
             <i class="fa fa-camera fa-fw"></i>

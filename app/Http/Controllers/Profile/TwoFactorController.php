@@ -19,20 +19,6 @@ use Jitamin\Core\Controller\AccessForbiddenException;
 class TwoFactorController extends ProfileController
 {
     /**
-     * Only the current user can access to 2FA settings.
-     *
-     * @param array $user
-     *
-     * @throws AccessForbiddenException
-     */
-    private function checkCurrentUser(array $user)
-    {
-        if ($user['id'] != $this->userSession->getId()) {
-            throw new AccessForbiddenException();
-        }
-    }
-
-    /**
      * Show form to disable/enable 2FA.
      */
     public function index()
@@ -41,7 +27,7 @@ class TwoFactorController extends ProfileController
         $this->checkCurrentUser($user);
         unset($this->sessionStorage->twoFactorSecret);
 
-        $this->response->html($this->helper->layout->profile('twofactor/index', [
+        $this->response->html($this->helper->layout->profile('profile/twofactor/index', [
             'user'     => $user,
             'provider' => $this->authenticationManager->getPostAuthenticationProvider()->getName(),
         ]));
@@ -66,7 +52,7 @@ class TwoFactorController extends ProfileController
             $provider->setSecret($this->sessionStorage->twoFactorSecret);
         }
 
-        $this->response->html($this->helper->layout->profile('twofactor/show', [
+        $this->response->html($this->helper->layout->profile('profile/twofactor/show', [
             'user'       => $user,
             'secret'     => $this->sessionStorage->twoFactorSecret,
             'qrcode_url' => $provider->getQrCodeUrl($label),
@@ -163,7 +149,7 @@ class TwoFactorController extends ProfileController
             $this->sessionStorage->twoFactorBeforeCodeCalled = true;
         }
 
-        $this->response->html($this->helper->layout->app('twofactor/check', [
+        $this->response->html($this->helper->layout->app('profile/twofactor/check', [
             'title' => t('Check two factor authentication code'),
         ]));
     }
@@ -187,8 +173,22 @@ class TwoFactorController extends ProfileController
             return $this->response->redirect($this->helper->url->to('Profile/ProfileController', 'show', ['user_id' => $user['id']]));
         }
 
-        return $this->response->html($this->helper->layout->profile('twofactor/disable', [
+        return $this->response->html($this->helper->layout->profile('profile/twofactor/disable', [
             'user' => $user,
         ]));
+    }
+
+    /**
+     * Only the current user can access to 2FA settings.
+     *
+     * @param array $user
+     *
+     * @throws AccessForbiddenException
+     */
+    protected function checkCurrentUser(array $user)
+    {
+        if ($user['id'] != $this->userSession->getId()) {
+            throw new AccessForbiddenException();
+        }
     }
 }

@@ -12,10 +12,6 @@
 namespace Jitamin\Controller\Project;
 
 use Jitamin\Controller\BaseController;
-use Jitamin\Filter\ProjectIdsFilter;
-use Jitamin\Filter\ProjectStatusFilter;
-use Jitamin\Filter\ProjectTypeFilter;
-use Jitamin\Formatter\ProjectGanttFormatter;
 use Jitamin\Model\ProjectModel;
 
 /**
@@ -24,41 +20,27 @@ use Jitamin\Model\ProjectModel;
 class ProjectController extends BaseController
 {
     /**
-     * List of projects.
+     * Project entrypoint.
      */
-    public function index()
+    public function show()
     {
-        if ($this->userSession->isAdmin()) {
-            $project_ids = $this->projectModel->getAllIds();
-        } else {
-            $project_ids = $this->projectPermissionModel->getProjectIds($this->userSession->getId());
-        }
+        $project = $this->getProject();
 
-        $nb_projects = count($project_ids);
+        list($className, $method) = $this->helper->app->getProjectDefaultView($project['default_view'], true);
+        $controllerObject = new $className($this->container);
 
-        $paginator = $this->paginator
-            ->setUrl('Project/ProjectController', 'index')
-            ->setMax(20)
-            ->setOrder('name')
-            ->setQuery($this->projectModel->getQueryColumnStats($project_ids))
-            ->calculate();
-
-        $this->response->html($this->helper->layout->app('project/index', [
-            'paginator'   => $paginator,
-            'nb_projects' => $nb_projects,
-            'title'       => t('Projects list'),
-        ]));
+        return $controllerObject->{$method}();
     }
 
     /**
      * Show project overview.
      */
-    public function show()
+    public function overview()
     {
         $project = $this->getProject();
         $this->projectModel->getColumnStats($project);
 
-        $this->response->html($this->helper->layout->app('project/show', [
+        $this->response->html($this->helper->layout->app('project/overview', [
             'project'     => $project,
             'title'       => $project['name'],
             'description' => $this->helper->projectHeader->getDescription($project),
@@ -67,25 +49,6 @@ class ProjectController extends BaseController
             'events'      => $this->helper->projectActivity->getProjectEvents($project['id'], 10),
             'images'      => $this->projectFileModel->getAllImages($project['id']),
             'files'       => $this->projectFileModel->getAllDocuments($project['id']),
-        ]));
-    }
-
-    /**
-     * Display Gantt chart for all projects.
-     */
-    public function gantt()
-    {
-        $project_ids = $this->projectPermissionModel->getActiveProjectIds($this->userSession->getId());
-        $filter = $this->projectQuery
-            ->withFilter(new ProjectTypeFilter(ProjectModel::TYPE_TEAM))
-            ->withFilter(new ProjectStatusFilter(ProjectModel::ACTIVE))
-            ->withFilter(new ProjectIdsFilter($project_ids));
-
-        $filter->getQuery()->asc(ProjectModel::TABLE.'.start_date');
-
-        $this->response->html($this->helper->layout->app('project/gantt', [
-            'projects' => $filter->format(new ProjectGanttFormatter($this->container)),
-            'title'    => t('Projects Gantt chart'),
         ]));
     }
 
@@ -135,51 +98,13 @@ class ProjectController extends BaseController
             if ($project_id > 0) {
                 $this->flash->success(t('Your project have been created successfully.'));
 
-                return $this->response->redirect($this->helper->url->to('Project/ProjectSettingsController', 'show', ['project_id' => $project_id]));
+                return $this->response->redirect($this->helper->url->to('Project/ProjectController', 'show', ['project_id' => $project_id]));
             }
 
             $this->flash->failure(t('Unable to create your project.'));
         }
 
         return $this->create($values, $errors);
-    }
-
-    /**
-     * General edition (most common operations).
-     *
-     * @param array $values
-     * @param array $errors
-     */
-    public function edit(array $values = [], array $errors = [])
-    {
-        $project = $this->getProject();
-
-        $this->response->html($this->helper->layout->project('project/edit', [
-            'owners'  => $this->projectUserRoleModel->getAssignableUsersList($project['id'], true),
-            'values'  => empty($values) ? $project : $values,
-            'errors'  => $errors,
-            'project' => $project,
-            'title'   => t('Edit project'),
-        ]));
-    }
-
-    /**
-     * Change project description.
-     *
-     * @param array $values
-     * @param array $errors
-     */
-    public function edit_description(array $values = [], array $errors = [])
-    {
-        $project = $this->getProject();
-
-        $this->response->html($this->helper->layout->project('project/edit_description', [
-            'owners'  => $this->projectUserRoleModel->getAssignableUsersList($project['id'], true),
-            'values'  => empty($values) ? $project : $values,
-            'errors'  => $errors,
-            'project' => $project,
-            'title'   => t('Edit project'),
-        ]));
     }
 
     /**
@@ -243,31 +168,6 @@ class ProjectController extends BaseController
     }
 
     /**
-     * Validate and update a project.
-     */
-    public function update()
-    {
-        $project = $this->getProject();
-        $values = $this->request->getValues();
-        $redirect = $this->request->getStringParam('redirect', 'edit');
-
-        $values = $this->prepareValues($redirect, $project, $values);
-        list($valid, $errors) = $this->projectValidator->validateModification($values);
-
-        if ($valid) {
-            if ($this->projectModel->update($values)) {
-                $this->flash->success(t('Project updated successfully.'));
-
-                return $this->response->redirect($this->helper->url->to('Project/ProjectController', $redirect, ['project_id' => $project['id']]), true);
-            } else {
-                $this->flash->failure(t('Unable to update this project.'));
-            }
-        }
-
-        return $this->$redirect($values, $errors);
-    }
-
-    /**
      * Update new project start date and end date.
      */
     public function updateDate()
@@ -288,39 +188,13 @@ class ProjectController extends BaseController
     }
 
     /**
-     * Prepare form values.
-     *
-     * @param string $redirect
-     * @param array  $project
-     * @param array  $values
-     *
-     * @return array
-     */
-    private function prepareValues($redirect, array $project, array $values)
-    {
-        if ($redirect === 'edit') {
-            if (isset($values['is_private'])) {
-                if (!$this->helper->user->hasProjectAccess('Project/ProjectController', 'create', $project['id'])) {
-                    unset($values['is_private']);
-                }
-            } elseif ($project['is_private'] == 1 && !isset($values['is_private'])) {
-                if ($this->helper->user->hasProjectAccess('Project/ProjectController', 'create', $project['id'])) {
-                    $values += ['is_private' => 0];
-                }
-            }
-        }
-
-        return $values;
-    }
-
-    /**
      * Create or duplicate a project.
      *
      * @param array $values
      *
      * @return bool|int
      */
-    private function createOrDuplicate(array $values)
+    protected function createOrDuplicate(array $values)
     {
         if (empty($values['src_project_id'])) {
             return $this->createNewProject($values);
@@ -336,7 +210,7 @@ class ProjectController extends BaseController
      *
      * @return bool|int
      */
-    private function createNewProject(array $values)
+    protected function createNewProject(array $values)
     {
         $project = [
             'name'       => $values['name'],
@@ -353,7 +227,7 @@ class ProjectController extends BaseController
      *
      * @return bool|int
      */
-    private function duplicateNewProject(array $values)
+    protected function duplicateNewProject(array $values)
     {
         $selection = [];
 

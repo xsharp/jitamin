@@ -37,31 +37,12 @@ class SubtaskController extends BaseController
             $values = $this->prepareValues($task);
         }
 
-        $this->response->html($this->template->render('subtask/create', [
+        $this->response->html($this->template->render('task/subtask/create', [
             'values'     => $values,
             'errors'     => $errors,
             'users_list' => $this->projectUserRoleModel->getAssignableUsersList($task['project_id']),
             'task'       => $task,
         ]));
-    }
-
-    /**
-     * Prepare form values.
-     *
-     * @param array $task
-     *
-     * @return array
-     */
-    protected function prepareValues(array $task)
-    {
-        $values = [
-            'task_id'         => $task['id'],
-            'another_subtask' => $this->request->getIntegerParam('another_subtask', 0),
-        ];
-
-        $values = $this->hook->merge('controller:subtask:form:default', $values, ['default_values' => $values]);
-
-        return $values;
     }
 
     /**
@@ -105,7 +86,7 @@ class SubtaskController extends BaseController
         $task = $this->getTask();
         $subtask = $this->getSubtask();
 
-        $this->response->html($this->template->render('subtask/edit', [
+        $this->response->html($this->template->render('task/subtask/edit', [
             'values'      => empty($values) ? $subtask : $values,
             'errors'      => $errors,
             'users_list'  => $this->projectUserRoleModel->getAssignableUsersList($task['project_id']),
@@ -147,7 +128,7 @@ class SubtaskController extends BaseController
         $task = $this->getTask();
         $subtask = $this->getSubtask();
 
-        $this->response->html($this->template->render('subtask/remove', [
+        $this->response->html($this->template->render('task/subtask/remove', [
             'subtask' => $subtask,
             'task'    => $task,
         ]));
@@ -186,5 +167,24 @@ class SubtaskController extends BaseController
         } else {
             throw new AccessForbiddenException();
         }
+    }
+
+    /**
+     * Prepare form values.
+     *
+     * @param array $task
+     *
+     * @return array
+     */
+    protected function prepareValues(array $task)
+    {
+        $values = [
+            'task_id'         => $task['id'],
+            'another_subtask' => $this->request->getIntegerParam('another_subtask', 0),
+        ];
+
+        $values = $this->hook->merge('controller:subtask:form:default', $values, ['default_values' => $values]);
+
+        return $values;
     }
 }

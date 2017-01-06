@@ -20,6 +20,7 @@ use Jitamin\Filter\TaskProjectFilter;
 use Jitamin\Filter\TaskProjectsFilter;
 use Jitamin\Filter\TaskTitleFilter;
 use Jitamin\Formatter\TaskAutoCompleteFormatter;
+use Jitamin\Formatter\TaskGanttFormatter;
 use Jitamin\Model\TaskModel;
 use Jitamin\Model\UserMetadataModel;
 
@@ -76,6 +77,31 @@ class TaskController extends BaseController
             'external_links'  => $this->taskExternalLinkModel->getAll($task['id']),
             'link_label_list' => $this->linkModel->getList(0, false),
             'tags'            => $this->taskTagModel->getList($task['id']),
+        ]));
+    }
+
+    /**
+     * Show Gantt chart for one project.
+     */
+    public function gantt()
+    {
+        $project = $this->getProject();
+        $search = $this->helper->projectHeader->getSearchQuery($project);
+        $sorting = $this->request->getStringParam('sorting', 'board');
+        $filter = $this->taskLexer->build($search)->withFilter(new TaskProjectFilter($project['id']));
+
+        if ($sorting === 'date') {
+            $filter->getQuery()->asc(TaskModel::TABLE.'.date_started')->asc(TaskModel::TABLE.'.date_creation');
+        } else {
+            $filter->getQuery()->asc('column_position')->asc(TaskModel::TABLE.'.position');
+        }
+
+        $this->response->html($this->helper->layout->app('task/gantt', [
+            'project'     => $project,
+            'title'       => $project['name'],
+            'description' => $this->helper->projectHeader->getDescription($project),
+            'sorting'     => $sorting,
+            'tasks'       => $filter->format(new TaskGanttFormatter($this->container)),
         ]));
     }
 
@@ -236,6 +262,27 @@ class TaskController extends BaseController
     }
 
     /**
+     * Save new task start date and due date.
+     */
+    public function set_date()
+    {
+        $this->getProject();
+        $values = $this->request->getJson();
+
+        $result = $this->taskModel->update([
+            'id'           => $values['id'],
+            'date_started' => strtotime($values['start']),
+            'date_due'     => strtotime($values['end']),
+        ]);
+
+        if (!$result) {
+            $this->response->json(['message' => 'Unable to save task'], 400);
+        } else {
+            $this->response->json(['message' => 'OK'], 201);
+        }
+    }
+
+    /**
      * Display a form to edit a task.
      *
      * @param array $values
@@ -345,7 +392,7 @@ class TaskController extends BaseController
         if (isset($values['duplicate_multiple_projects']) && $values['duplicate_multiple_projects'] == 1) {
             $this->chooseProjects($project, $task_id);
         } elseif (isset($values['another_task']) && $values['another_task'] == 1) {
-            $this->show([
+            $this->create([
                 'owner_id'     => $values['owner_id'],
                 'color_id'     => $values['color_id'],
                 'category_id'  => isset($values['category_id']) ? $values['category_id'] : 0,

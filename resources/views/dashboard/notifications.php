@@ -1,17 +1,10 @@
-<div class="page-header">
-    <h2><?= t('My notifications') ?></h2>
-
 <?php if (empty($notifications)): ?>
-</div>
 <p class="alert"><?= t('You have no unread notifications') ?></p>
 <?php else: ?>
-    <ul class="pull-right">
-        <li>
-            <i class="fa fa-check-square-o fa-fw"></i>
-            <?= $this->url->link(t('Mark all as read'), 'WebNotificationController', 'flush', ['user_id' => $user['id']]) ?>
-        </li>
-    </ul>
-</div>
+    <div class="pull-right">
+        <i class="fa fa-check-square-o fa-fw"></i>
+        <?= $this->url->link(t('Mark all as read'), 'WebNotificationController', 'flush', ['user_id' => $user['id']]) ?>
+    </div>
 
     <table class="table-striped table-scrolling table-small">
         <tr>

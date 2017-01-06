@@ -108,7 +108,7 @@ class BoardAjaxController extends BaseController
      *
      * @param int $mode
      */
-    private function changeDisplayMode($mode)
+    protected function changeDisplayMode($mode)
     {
         $project_id = $this->request->getIntegerParam('project_id');
         $this->userMetadataCacheDecorator->set(UserMetadataModel::KEY_BOARD_COLLAPSED.$project_id, $mode);
@@ -116,7 +116,7 @@ class BoardAjaxController extends BaseController
         if ($this->request->isAjax()) {
             $this->response->html($this->renderBoard($project_id));
         } else {
-            $this->response->redirect($this->helper->url->to('BoardController', 'show', ['project_id' => $project_id]));
+            $this->response->redirect($this->helper->url->to('Project/Board/BoardController', 'show', ['project_id' => $project_id]));
         }
     }
 
@@ -129,7 +129,7 @@ class BoardAjaxController extends BaseController
      */
     protected function renderBoard($project_id)
     {
-        return $this->template->render('board/table_container', [
+        return $this->template->render('project/board/table_container', [
             'project'                        => $this->projectModel->getById($project_id),
             'board_private_refresh_interval' => $this->settingModel->get('board_private_refresh_interval'),
             'board_highlight_period'         => $this->settingModel->get('board_highlight_period'),
