@@ -11,15 +11,15 @@
 
 namespace Jitamin\Controller\Profile;
 
-use Jitamin\Controller\BaseController;
-use Jitamin\Core\Controller\PageNotFoundException;
-use Jitamin\Core\Security\Token;
+use Jitamin\Controller\Controller;
+use Jitamin\Foundation\Controller\PageNotFoundException;
+use Jitamin\Foundation\Security\Token;
 use Jitamin\Model\ProjectModel;
 
 /**
  * Class ProfileController.
  */
-class ProfileController extends BaseController
+class ProfileController extends Controller
 {
     /**
      * Public user profile.
@@ -119,7 +119,6 @@ class ProfileController extends BaseController
      */
     public function removeSession()
     {
-        $this->checkCSRFParam();
         $user = $this->getUser();
         $this->rememberMeSessionModel->remove($this->request->getIntegerParam('id'));
         $this->response->redirect($this->helper->url->to('Profile/ProfileController', 'sessions', ['user_id' => $user['id']]));
@@ -188,7 +187,6 @@ class ProfileController extends BaseController
     public function generateApiToken()
     {
         $user = $this->getUser();
-        $this->checkCSRFParam();
         $this->userModel->update([
             'id'        => $user['id'],
             'api_token' => Token::getToken(),
@@ -202,7 +200,6 @@ class ProfileController extends BaseController
     public function removeApiToken()
     {
         $user = $this->getUser();
-        $this->checkCSRFParam();
         $this->userModel->update([
             'id'        => $user['id'],
             'api_token' => null,
@@ -231,8 +228,6 @@ class ProfileController extends BaseController
         $switch = $this->request->getStringParam('switch');
 
         if ($switch === 'enable' || $switch === 'disable') {
-            $this->checkCSRFParam();
-
             if ($this->userModel->{$switch.'PublicAccess'}($user['id'])) {
                 $this->flash->success(t('User updated successfully.'));
             } else {
@@ -254,8 +249,8 @@ class ProfileController extends BaseController
      * @param array $values
      * @param array $errors
      *
-     * @throws \Jitamin\Core\Controller\AccessForbiddenException
-     * @throws \Jitamin\Core\Controller\PageNotFoundException
+     * @throws \Jitamin\Foundation\Controller\AccessForbiddenException
+     * @throws \Jitamin\Foundation\Controller\PageNotFoundException
      */
     public function edit(array $values = [], array $errors = [])
     {
@@ -280,8 +275,8 @@ class ProfileController extends BaseController
      * @param array $values
      * @param array $errors
      *
-     * @throws \Jitamin\Core\Controller\AccessForbiddenException
-     * @throws \Jitamin\Core\Controller\PageNotFoundException
+     * @throws \Jitamin\Foundation\Controller\AccessForbiddenException
+     * @throws \Jitamin\Foundation\Controller\PageNotFoundException
      */
     public function preferences(array $values = [], array $errors = [])
     {
@@ -340,8 +335,8 @@ class ProfileController extends BaseController
      * @param array $values
      * @param array $errors
      *
-     * @throws \Jitamin\Core\Controller\AccessForbiddenException
-     * @throws \Jitamin\Core\Controller\PageNotFoundException
+     * @throws \Jitamin\Foundation\Controller\AccessForbiddenException
+     * @throws \Jitamin\Foundation\Controller\PageNotFoundException
      */
     public function changePassword(array $values = [], array $errors = [])
     {
@@ -357,8 +352,8 @@ class ProfileController extends BaseController
     /**
      * Save new password.
      *
-     * @throws \Jitamin\Core\Controller\AccessForbiddenException
-     * @throws \Jitamin\Core\Controller\PageNotFoundException
+     * @throws \Jitamin\Foundation\Controller\AccessForbiddenException
+     * @throws \Jitamin\Foundation\Controller\PageNotFoundException
      */
     public function savePassword()
     {

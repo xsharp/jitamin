@@ -11,15 +11,15 @@
 
 namespace Jitamin\Controller\Project;
 
-use Jitamin\Controller\BaseController;
-use Jitamin\Core\Controller\AccessForbiddenException;
-use Jitamin\Core\Controller\PageNotFoundException;
+use Jitamin\Controller\Controller;
+use Jitamin\Foundation\Controller\AccessForbiddenException;
+use Jitamin\Foundation\Controller\PageNotFoundException;
 use Jitamin\Model\SwimlaneModel;
 
 /**
  * Swimlanes Controller.
  */
-class SwimlaneController extends BaseController
+class SwimlaneController extends Controller
 {
     /**
      * List of swimlanes for a given project.
@@ -43,7 +43,7 @@ class SwimlaneController extends BaseController
      * @param array $values
      * @param array $errors
      *
-     * @throws \Jitamin\Core\Controller\PageNotFoundException
+     * @throws \Jitamin\Foundation\Controller\PageNotFoundException
      */
     public function create(array $values = [], array $errors = [])
     {
@@ -84,7 +84,7 @@ class SwimlaneController extends BaseController
      * @param array $values
      * @param array $errors
      *
-     * @throws \Jitamin\Core\Controller\PageNotFoundException
+     * @throws \Jitamin\Foundation\Controller\PageNotFoundException
      */
     public function editDefault(array $values = [], array $errors = [])
     {
@@ -127,7 +127,7 @@ class SwimlaneController extends BaseController
      * @param array $values
      * @param array $errors
      *
-     * @throws \Jitamin\Core\Controller\PageNotFoundException
+     * @throws \Jitamin\Foundation\Controller\PageNotFoundException
      */
     public function edit(array $values = [], array $errors = [])
     {
@@ -165,35 +165,28 @@ class SwimlaneController extends BaseController
     }
 
     /**
-     * Confirmation dialog before removing a swimlane.
-     */
-    public function confirm()
-    {
-        $project = $this->getProject();
-        $swimlane = $this->getSwimlane();
-
-        $this->response->html($this->helper->layout->project('project/swimlane/remove', [
-            'project'  => $project,
-            'swimlane' => $swimlane,
-        ]));
-    }
-
-    /**
      * Remove a swimlane.
      */
     public function remove()
     {
-        $this->checkCSRFParam();
         $project = $this->getProject();
-        $swimlane_id = $this->request->getIntegerParam('swimlane_id');
+        $swimlane = $this->getSwimlane();
 
-        if ($this->swimlaneModel->remove($project['id'], $swimlane_id)) {
-            $this->flash->success(t('Swimlane removed successfully.'));
-        } else {
-            $this->flash->failure(t('Unable to remove this swimlane.'));
+        if ($this->request->isPost()) {
+            $this->request->checkCSRFToken();
+            if ($this->swimlaneModel->remove($project['id'], $swimlane['id'])) {
+                $this->flash->success(t('Swimlane removed successfully.'));
+            } else {
+                $this->flash->failure(t('Unable to remove this swimlane.'));
+            }
+
+            return $this->response->redirect($this->helper->url->to('Project/SwimlaneController', 'index', ['project_id' => $project['id']]));
         }
 
-        $this->response->redirect($this->helper->url->to('Project/SwimlaneController', 'index', ['project_id' => $project['id']]));
+        return $this->response->html($this->helper->layout->project('project/swimlane/remove', [
+            'project'  => $project,
+            'swimlane' => $swimlane,
+        ]));
     }
 
     /**
@@ -201,7 +194,6 @@ class SwimlaneController extends BaseController
      */
     public function disable()
     {
-        $this->checkCSRFParam();
         $project = $this->getProject();
         $swimlane_id = $this->request->getIntegerParam('swimlane_id');
 
@@ -219,7 +211,6 @@ class SwimlaneController extends BaseController
      */
     public function disableDefault()
     {
-        $this->checkCSRFParam();
         $project = $this->getProject();
 
         if ($this->swimlaneModel->disableDefault($project['id'])) {
@@ -236,7 +227,6 @@ class SwimlaneController extends BaseController
      */
     public function enable()
     {
-        $this->checkCSRFParam();
         $project = $this->getProject();
         $swimlane_id = $this->request->getIntegerParam('swimlane_id');
 
@@ -254,7 +244,6 @@ class SwimlaneController extends BaseController
      */
     public function enableDefault()
     {
-        $this->checkCSRFParam();
         $project = $this->getProject();
 
         if ($this->swimlaneModel->enableDefault($project['id'])) {

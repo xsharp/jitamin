@@ -11,14 +11,14 @@
 
 namespace Jitamin\Controller\Project;
 
-use Jitamin\Controller\BaseController;
-use Jitamin\Core\Controller\AccessForbiddenException;
-use Jitamin\Core\Security\Role;
+use Jitamin\Controller\Controller;
+use Jitamin\Foundation\Controller\AccessForbiddenException;
+use Jitamin\Foundation\Security\Role;
 
 /**
  * Custom Filter Controller.
  */
-class CustomFilterController extends BaseController
+class CustomFilterController extends Controller
 {
     /**
      * Display list of filters.
@@ -26,7 +26,7 @@ class CustomFilterController extends BaseController
      * @param array $values
      * @param array $errors
      *
-     * @throws \Jitamin\Core\Controller\PageNotFoundException
+     * @throws \Jitamin\Foundation\Controller\PageNotFoundException
      */
     public function index(array $values = [], array $errors = [])
     {
@@ -67,38 +67,31 @@ class CustomFilterController extends BaseController
     }
 
     /**
-     * Confirmation dialog before removing a custom filter.
-     */
-    public function confirm()
-    {
-        $project = $this->getProject();
-        $filter = $this->customFilterModel->getById($this->request->getIntegerParam('filter_id'));
-
-        $this->response->html($this->helper->layout->project('project/custom_filter/remove', [
-            'project' => $project,
-            'filter'  => $filter,
-            'title'   => t('Remove a custom filter'),
-        ]));
-    }
-
-    /**
      * Remove a custom filter.
      */
     public function remove()
     {
-        $this->checkCSRFParam();
         $project = $this->getProject();
         $filter = $this->customFilterModel->getById($this->request->getIntegerParam('filter_id'));
 
         $this->checkPermission($project, $filter);
 
-        if ($this->customFilterModel->remove($filter['id'])) {
-            $this->flash->success(t('Custom filter removed successfully.'));
-        } else {
-            $this->flash->failure(t('Unable to remove this custom filter.'));
+        if ($this->request->isPost()) {
+            $this->request->checkCSRFToken();
+            if ($this->customFilterModel->remove($filter['id'])) {
+                $this->flash->success(t('Custom filter removed successfully.'));
+            } else {
+                $this->flash->failure(t('Unable to remove this custom filter.'));
+            }
+
+            return $this->response->redirect($this->helper->url->to('Project/CustomFilterController', 'index', ['project_id' => $project['id']]));
         }
 
-        $this->response->redirect($this->helper->url->to('Project/CustomFilterController', 'index', ['project_id' => $project['id']]));
+        return $this->response->html($this->helper->layout->project('project/custom_filter/remove', [
+            'project' => $project,
+            'filter'  => $filter,
+            'title'   => t('Remove a custom filter'),
+        ]));
     }
 
     /**
@@ -108,7 +101,7 @@ class CustomFilterController extends BaseController
      * @param array $errors
      *
      * @throws AccessForbiddenException
-     * @throws \Jitamin\Core\Controller\PageNotFoundException
+     * @throws \Jitamin\Foundation\Controller\PageNotFoundException
      */
     public function edit(array $values = [], array $errors = [])
     {

@@ -11,14 +11,14 @@
 
 namespace Jitamin\Controller\Admin;
 
-use Jitamin\Controller\BaseController;
-use Jitamin\Core\Security\Role;
+use Jitamin\Controller\Controller;
+use Jitamin\Foundation\Security\Role;
 use Jitamin\Notification\MailNotification;
 
 /**
  * Class UserController.
  */
-class UserController extends BaseController
+class UserController extends Controller
 {
     /**
      * List all users.
@@ -94,8 +94,8 @@ class UserController extends BaseController
      * @param array $values
      * @param array $errors
      *
-     * @throws \Jitamin\Core\Controller\AccessForbiddenException
-     * @throws \Jitamin\Core\Controller\PageNotFoundException
+     * @throws \Jitamin\Foundation\Controller\AccessForbiddenException
+     * @throws \Jitamin\Foundation\Controller\PageNotFoundException
      */
     public function changeAuthentication(array $values = [], array $errors = [])
     {
@@ -116,8 +116,8 @@ class UserController extends BaseController
     /**
      * Save authentication.
      *
-     * @throws \Jitamin\Core\Controller\AccessForbiddenException
-     * @throws \Jitamin\Core\Controller\PageNotFoundException
+     * @throws \Jitamin\Foundation\Controller\AccessForbiddenException
+     * @throws \Jitamin\Foundation\Controller\PageNotFoundException
      */
     public function saveAuthentication()
     {
@@ -144,7 +144,6 @@ class UserController extends BaseController
     public function unlock()
     {
         $user = $this->getUser();
-        $this->checkCSRFParam();
 
         if ($this->userLockingModel->resetFailedLogin($user['username'])) {
             $this->flash->success(t('User unlocked successfully.'));

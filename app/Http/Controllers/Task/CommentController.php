@@ -11,15 +11,15 @@
 
 namespace Jitamin\Controller\Task;
 
-use Jitamin\Controller\BaseController;
-use Jitamin\Core\Controller\AccessForbiddenException;
-use Jitamin\Core\Controller\PageNotFoundException;
+use Jitamin\Controller\Controller;
+use Jitamin\Foundation\Controller\AccessForbiddenException;
+use Jitamin\Foundation\Controller\PageNotFoundException;
 use Jitamin\Model\UserMetadataModel;
 
 /**
  * Comment Controller.
  */
-class CommentController extends BaseController
+class CommentController extends Controller
 {
     /**
      * Add comment form.
@@ -119,36 +119,29 @@ class CommentController extends BaseController
     }
 
     /**
-     * Confirmation dialog before removing a comment.
-     */
-    public function confirm()
-    {
-        $task = $this->getTask();
-        $comment = $this->getComment();
-
-        $this->response->html($this->template->render('task/comment/remove', [
-            'comment' => $comment,
-            'task'    => $task,
-            'title'   => t('Remove a comment'),
-        ]));
-    }
-
-    /**
      * Remove a comment.
      */
     public function remove()
     {
-        $this->checkCSRFParam();
         $task = $this->getTask();
         $comment = $this->getComment();
 
-        if ($this->commentModel->remove($comment['id'])) {
-            $this->flash->success(t('Comment removed successfully.'));
-        } else {
-            $this->flash->failure(t('Unable to remove this comment.'));
+        if ($this->request->isPost()) {
+            $this->request->checkCSRFToken();
+            if ($this->commentModel->remove($comment['id'])) {
+                $this->flash->success(t('Comment removed successfully.'));
+            } else {
+                $this->flash->failure(t('Unable to remove this comment.'));
+            }
+
+            return $this->response->redirect($this->helper->url->to('Task/TaskController', 'show', ['task_id' => $task['id'], 'project_id' => $task['project_id']], 'comments'));
         }
 
-        $this->response->redirect($this->helper->url->to('Task/TaskController', 'show', ['task_id' => $task['id'], 'project_id' => $task['project_id']], 'comments'));
+        return $this->response->html($this->template->render('task/comment/remove', [
+            'comment' => $comment,
+            'task'    => $task,
+            'title'   => t('Remove a comment'),
+        ]));
     }
 
     /**

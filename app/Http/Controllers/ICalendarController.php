@@ -12,18 +12,18 @@
 namespace Jitamin\Controller;
 
 use Eluceo\iCal\Component\Calendar as iCalendar;
-use Jitamin\Core\Controller\AccessForbiddenException;
-use Jitamin\Core\Filter\QueryBuilder;
 use Jitamin\Filter\TaskAssigneeFilter;
 use Jitamin\Filter\TaskProjectFilter;
 use Jitamin\Filter\TaskStatusFilter;
 use Jitamin\Formatter\TaskICalFormatter;
+use Jitamin\Foundation\Controller\AccessForbiddenException;
+use Jitamin\Foundation\Filter\QueryBuilder;
 use Jitamin\Model\TaskModel;
 
 /**
  * iCalendar Controller.
  */
-class ICalendarController extends BaseController
+class ICalendarController extends Controller
 {
     /**
      * Get user iCalendar.

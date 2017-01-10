@@ -11,9 +11,9 @@
 
 require_once __DIR__.'/../../Base.php';
 
-use Jitamin\Core\Http\Request;
-use Jitamin\Core\Http\Route;
-use Jitamin\Core\Http\Router;
+use Jitamin\Foundation\Http\Request;
+use Jitamin\Foundation\Http\Route;
+use Jitamin\Foundation\Http\Router;
 
 class RouterTest extends Base
 {
@@ -102,7 +102,7 @@ class RouterTest extends Base
 
         $this->container['route'] = new Route($this->container);
         $this->container['route']->enable();
-        $this->container['route']->addRoute('/my/route/:param', 'FakeController', 'myAction');
+        $this->container['route']->addRoute('/my/route/{param}', 'FakeController', 'myAction');
 
         $dispatcher = new Router($this->container);
         $dispatcher->dispatch();
@@ -129,7 +129,7 @@ class RouterTest extends Base
 
         $this->container['route'] = new Route($this->container);
         $this->container['route']->enable();
-        $this->container['route']->addRoute('/my/plugin/route/:param', 'fakeController', 'myAction', 'Myplugin');
+        $this->container['route']->addRoute('/my/plugin/route/{param}', 'fakeController', 'myAction', 'Myplugin');
 
         $dispatcher = new Router($this->container);
         $dispatcher->dispatch();

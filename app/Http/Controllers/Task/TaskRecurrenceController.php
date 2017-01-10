@@ -11,12 +11,12 @@
 
 namespace Jitamin\Controller\Task;
 
-use Jitamin\Controller\BaseController;
+use Jitamin\Controller\Controller;
 
 /**
  * Task Recurrence controller.
  */
-class TaskRecurrenceController extends BaseController
+class TaskRecurrenceController extends Controller
 {
     /**
      * Edit recurrence form.
@@ -24,8 +24,8 @@ class TaskRecurrenceController extends BaseController
      * @param array $values
      * @param array $errors
      *
-     * @throws \Jitamin\Core\Controller\AccessForbiddenException
-     * @throws \Jitamin\Core\Controller\PageNotFoundException
+     * @throws \Jitamin\Foundation\Controller\AccessForbiddenException
+     * @throws \Jitamin\Foundation\Controller\PageNotFoundException
      */
     public function edit(array $values = [], array $errors = [])
     {

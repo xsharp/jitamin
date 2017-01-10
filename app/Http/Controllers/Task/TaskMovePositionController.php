@@ -11,15 +11,15 @@
 
 namespace Jitamin\Controller\Task;
 
-use Jitamin\Controller\BaseController;
-use Jitamin\Core\Controller\AccessForbiddenException;
+use Jitamin\Controller\Controller;
 use Jitamin\Formatter\BoardFormatter;
+use Jitamin\Foundation\Controller\AccessForbiddenException;
 use Jitamin\Model\TaskModel;
 
 /**
  * Class TaskMovePositionController.
  */
-class TaskMovePositionController extends BaseController
+class TaskMovePositionController extends Controller
 {
     /**
      * Show position movement.

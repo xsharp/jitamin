@@ -11,7 +11,7 @@
 
 namespace Jitamin\Helper;
 
-use Jitamin\Core\Base;
+use Jitamin\Foundation\Base;
 
 /**
  * Project Header Helper.
@@ -52,7 +52,7 @@ class ProjectHeaderHelper extends Base
             'q'          => $this->getSearchQuery($project),
         ];
 
-        return $this->template->render('project_header/header', [
+        return $this->template->render('project/_header/header', [
             'project'             => $project,
             'filters'             => $filters,
             'categories_list'     => $this->categoryModel->getList($project['id'], false),

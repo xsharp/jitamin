@@ -11,12 +11,12 @@
 
 namespace Jitamin\Controller\Task;
 
-use Jitamin\Controller\BaseController;
+use Jitamin\Controller\Controller;
 
 /**
  * Task File Controller.
  */
-class TaskFileController extends BaseController
+class TaskFileController extends Controller
 {
     /**
      * Screenshot.
@@ -68,28 +68,21 @@ class TaskFileController extends BaseController
      */
     public function remove()
     {
-        $this->checkCSRFParam();
         $task = $this->getTask();
         $file = $this->taskFileModel->getById($this->request->getIntegerParam('file_id'));
 
-        if ($file['task_id'] == $task['id'] && $this->taskFileModel->remove($file['id'])) {
-            $this->flash->success(t('File removed successfully.'));
-        } else {
-            $this->flash->failure(t('Unable to remove this file.'));
+        if ($this->request->isPost()) {
+            $this->request->checkCSRFToken();
+            if ($file['task_id'] == $task['id'] && $this->taskFileModel->remove($file['id'])) {
+                $this->flash->success(t('File removed successfully.'));
+            } else {
+                $this->flash->failure(t('Unable to remove this file.'));
+            }
+
+            return $this->response->redirect($this->helper->url->to('Task/TaskController', 'show', ['task_id' => $task['id'], 'project_id' => $task['project_id']]));
         }
 
-        $this->response->redirect($this->helper->url->to('Task/TaskController', 'show', ['task_id' => $task['id'], 'project_id' => $task['project_id']]));
-    }
-
-    /**
-     * Confirmation dialog before removing a file.
-     */
-    public function confirm()
-    {
-        $task = $this->getTask();
-        $file = $this->taskFileModel->getById($this->request->getIntegerParam('file_id'));
-
-        $this->response->html($this->template->render('task/attachment/remove', [
+        return $this->response->html($this->template->render('task/attachment/remove', [
             'task' => $task,
             'file' => $file,
         ]));

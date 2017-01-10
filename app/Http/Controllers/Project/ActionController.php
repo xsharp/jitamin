@@ -11,12 +11,12 @@
 
 namespace Jitamin\Controller\Project;
 
-use Jitamin\Controller\BaseController;
+use Jitamin\Controller\Controller;
 
 /**
  * Automatic Actions Controller.
  */
-class ActionController extends BaseController
+class ActionController extends Controller
 {
     /**
      * List of automatic actions for a given project.
@@ -126,37 +126,31 @@ class ActionController extends BaseController
     }
 
     /**
-     * Confirmation dialog before removing an action.
+     * Remove an action.
      */
-    public function confirm()
+    public function remove()
     {
         $project = $this->getProject();
+        $action = $this->actionModel->getById($this->request->getIntegerParam('action_id'));
 
-        $this->response->html($this->helper->layout->project('project/action/remove', [
-            'action'            => $this->actionModel->getById($this->request->getIntegerParam('action_id')),
+        if ($this->request->isPost()) {
+            $this->request->checkCSRFToken();
+            if (!empty($action) && $this->actionModel->remove($action['id'])) {
+                $this->flash->success(t('Action removed successfully.'));
+            } else {
+                $this->flash->failure(t('Unable to remove this action.'));
+            }
+
+            return $this->response->redirect($this->helper->url->to('Project/ActionController', 'index', ['project_id' => $project['id']]));
+        }
+
+        return $this->response->html($this->helper->layout->project('project/action/remove', [
+            'action'            => $action,
             'available_events'  => $this->eventManager->getAll(),
             'available_actions' => $this->actionManager->getAvailableActions(),
             'project'           => $project,
             'title'             => t('Remove an action'),
         ]));
-    }
-
-    /**
-     * Remove an action.
-     */
-    public function remove()
-    {
-        $this->checkCSRFParam();
-        $project = $this->getProject();
-        $action = $this->actionModel->getById($this->request->getIntegerParam('action_id'));
-
-        if (!empty($action) && $this->actionModel->remove($action['id'])) {
-            $this->flash->success(t('Action removed successfully.'));
-        } else {
-            $this->flash->failure(t('Unable to remove this action.'));
-        }
-
-        $this->response->redirect($this->helper->url->to('Project/ActionController', 'index', ['project_id' => $project['id']]));
     }
 
     /**

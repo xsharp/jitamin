@@ -11,13 +11,13 @@
 
 namespace Jitamin\Controller\Project;
 
-use Jitamin\Controller\BaseController;
-use Jitamin\Core\Csv;
+use Jitamin\Controller\Controller;
+use Jitamin\Foundation\Csv;
 
 /**
  * Import controller.
  */
-class ImportController extends BaseController
+class ImportController extends Controller
 {
     /**
      * Upload the file and ask settings.
@@ -25,7 +25,7 @@ class ImportController extends BaseController
      * @param array $values
      * @param array $errors
      *
-     * @throws \Jitamin\Core\Controller\PageNotFoundException
+     * @throws \Jitamin\Foundation\Controller\PageNotFoundException
      */
     public function show(array $values = [], array $errors = [])
     {

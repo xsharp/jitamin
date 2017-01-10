@@ -11,12 +11,12 @@
 
 namespace Jitamin\Controller\Project;
 
-use Jitamin\Controller\BaseController;
+use Jitamin\Controller\Controller;
 
 /**
  * Project File Controller.
  */
-class ProjectFileController extends BaseController
+class ProjectFileController extends Controller
 {
     /**
      * File upload form.
@@ -50,28 +50,21 @@ class ProjectFileController extends BaseController
      */
     public function remove()
     {
-        $this->checkCSRFParam();
         $project = $this->getProject();
         $file = $this->projectFileModel->getById($this->request->getIntegerParam('file_id'));
 
-        if ($this->projectFileModel->remove($file['id'])) {
-            $this->flash->success(t('File removed successfully.'));
-        } else {
-            $this->flash->failure(t('Unable to remove this file.'));
+        if ($this->request->isPost()) {
+            $this->request->checkCSRFToken();
+            if ($this->projectFileModel->remove($file['id'])) {
+                $this->flash->success(t('File removed successfully.'));
+            } else {
+                $this->flash->failure(t('Unable to remove this file.'));
+            }
+
+            return $this->response->redirect($this->helper->url->to('Project/ProjectController', 'show', ['project_id' => $project['id']]));
         }
 
-        $this->response->redirect($this->helper->url->to('Project/ProjectController', 'show', ['project_id' => $project['id']]));
-    }
-
-    /**
-     * Confirmation dialog before removing a file.
-     */
-    public function confirm()
-    {
-        $project = $this->getProject();
-        $file = $this->projectFileModel->getById($this->request->getIntegerParam('file_id'));
-
-        $this->response->html($this->template->render('project/attachment/remove', [
+        return $this->response->html($this->template->render('project/attachment/remove', [
             'project' => $project,
             'file'    => $file,
         ]));

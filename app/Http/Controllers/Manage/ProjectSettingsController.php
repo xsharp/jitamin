@@ -11,12 +11,12 @@
 
 namespace Jitamin\Controller\Manage;
 
-use Jitamin\Controller\BaseController;
+use Jitamin\Controller\Controller;
 
 /**
  * Class ProjectSettingsController.
  */
-class ProjectSettingsController extends BaseController
+class ProjectSettingsController extends Controller
 {
     /**
      * General edition (most common operations).
@@ -98,13 +98,12 @@ class ProjectSettingsController extends BaseController
     /**
      * Change project sharing.
      *
-     * @throws \Jitamin\Core\Controller\AccessForbiddenException
-     * @throws \Jitamin\Core\Controller\PageNotFoundException
+     * @throws \Jitamin\Foundation\Controller\AccessForbiddenException
+     * @throws \Jitamin\Foundation\Controller\PageNotFoundException
      */
     public function updateSharing()
     {
         $project = $this->getProject();
-        $this->checkCSRFParam();
         $switch = $this->request->getStringParam('switch');
 
         if ($this->projectModel->{$switch.'PublicAccess'}($project['id'])) {
@@ -135,7 +134,7 @@ class ProjectSettingsController extends BaseController
     /**
      * Update integrations.
      *
-     * @throws \Jitamin\Core\Controller\PageNotFoundException
+     * @throws \Jitamin\Foundation\Controller\PageNotFoundException
      */
     public function updateIntegrations()
     {
@@ -164,7 +163,7 @@ class ProjectSettingsController extends BaseController
     /**
      * Update notifications.
      *
-     * @throws \Jitamin\Core\Controller\PageNotFoundException
+     * @throws \Jitamin\Foundation\Controller\PageNotFoundException
      */
     public function updateNotifications()
     {

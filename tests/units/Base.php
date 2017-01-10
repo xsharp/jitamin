@@ -10,11 +10,13 @@
  */
 
 require __DIR__.'/../../vendor/autoload.php';
-require __DIR__.'/../../bootstrap/constants.php';
+
+$config = require_once __DIR__.'/../../config/config.php';
+require_once __DIR__.'/../../bootstrap/bootstrap.php';
 
 use Composer\Autoload\ClassLoader;
-use Jitamin\Core\Session\FlashMessage;
-use Jitamin\Core\Session\SessionStorage;
+use Jitamin\Foundation\Session\FlashMessage;
+use Jitamin\Foundation\Session\SessionStorage;
 use Jitamin\Providers\ActionProvider;
 use SimpleLogger\Logger;
 use Symfony\Component\EventDispatcher\Debug\TraceableEventDispatcher;
@@ -47,8 +49,8 @@ abstract class Base extends PHPUnit_Framework_TestCase
             $pdo->exec('DROP DATABASE '.DB_NAME);
             $pdo->exec('CREATE DATABASE '.DB_NAME.' WITH OWNER '.DB_USERNAME);
             $pdo = null;
-        } elseif (DB_DRIVER === 'sqlite' && file_exists(DB_NAME)) {
-            unlink(DB_NAME);
+        } elseif (DB_DRIVER === 'sqlite' && file_exists(DB_FILENAME)) {
+            unlink(DB_FILENAME);
         }
 
         $this->process = new Process('');
@@ -83,13 +85,13 @@ abstract class Base extends PHPUnit_Framework_TestCase
         $this->container['logger'] = new Logger();
 
         $this->container['httpClient'] = $this
-            ->getMockBuilder('\Jitamin\Core\Http\Client')
+            ->getMockBuilder('\Jitamin\Foundation\Http\Client')
             ->setConstructorArgs([$this->container])
             ->setMethods(['get', 'getJson', 'postJson', 'postJsonAsync', 'postForm', 'postFormAsync'])
             ->getMock();
 
         $this->container['emailClient'] = $this
-            ->getMockBuilder('\Jitamin\Core\Mail\Client')
+            ->getMockBuilder('\Jitamin\Foundation\Mail\Client')
             ->setConstructorArgs([$this->container])
             ->setMethods(['send'])
             ->getMock();
@@ -101,7 +103,7 @@ abstract class Base extends PHPUnit_Framework_TestCase
             ->getMock();
 
         $this->container['objectStorage'] = $this
-            ->getMockBuilder('\Jitamin\Core\ObjectStorage\FileStorage')
+            ->getMockBuilder('\Jitamin\Foundation\ObjectStorage\FileStorage')
             ->setConstructorArgs([$this->container])
             ->setMethods(['put', 'moveFile', 'remove', 'moveUploadedFile'])
             ->getMock();

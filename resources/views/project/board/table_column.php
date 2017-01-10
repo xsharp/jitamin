@@ -45,7 +45,7 @@
                             <?php if ($column['nb_tasks'] > 0 && $this->projectRole->canChangeTaskStatusInColumn($column['project_id'], $column['id'])): ?>
                                 <li>
                                     <i class="fa fa-close fa-fw"></i>
-                                    <?= $this->url->link(t('Close all tasks of this column'), 'Project/Board/BoardPopoverController', 'confirmCloseColumnTasks', ['project_id' => $column['project_id'], 'column_id' => $column['id'], 'swimlane_id' => $swimlane['id']], false, 'popover') ?>
+                                    <?= $this->url->link(t('Close all tasks of this column'), 'Project/Board/BoardPopoverController', 'closeColumnTasks', ['project_id' => $column['project_id'], 'column_id' => $column['id'], 'swimlane_id' => $swimlane['id']], false, 'popover') ?>
                                 </li>
                             <?php endif ?>
 
@@ -56,13 +56,13 @@
             </span>
 
             <?php if (!$not_editable && !empty($column['description'])): ?>
-                <span class="tooltip pull-right" title="<?= $this->text->markdownAttribute($column['description']) ?>">
+                <span class="tooltip text-right" title="<?= $this->text->markdownAttribute($column['description']) ?>">
                     &nbsp;<i class="fa fa-info-circle"></i>
                 </span>
             <?php endif ?>
 
             <?php if (!empty($column['score'])): ?>
-                <span class="pull-right" title="<?= t('Score') ?>">
+                <span class="text-right" title="<?= t('Score') ?>">
                     <?= $column['score'] ?>
                 </span>
             <?php endif ?>

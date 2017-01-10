@@ -11,14 +11,14 @@
 
 namespace Jitamin\Controller\Manage;
 
-use Jitamin\Controller\BaseController;
-use Jitamin\Core\Controller\AccessForbiddenException;
-use Jitamin\Core\Security\Role;
+use Jitamin\Controller\Controller;
+use Jitamin\Foundation\Controller\AccessForbiddenException;
+use Jitamin\Foundation\Security\Role;
 
 /**
  * Project Permission Controller.
  */
-class ProjectPermissionController extends BaseController
+class ProjectPermissionController extends Controller
 {
     /**
      * Show all permissions.
@@ -88,7 +88,6 @@ class ProjectPermissionController extends BaseController
      */
     public function removeUser()
     {
-        $this->checkCSRFParam();
         $project = $this->getProject();
         $user_id = $this->request->getIntegerParam('user_id');
 
@@ -142,7 +141,6 @@ class ProjectPermissionController extends BaseController
      */
     public function removeGroup()
     {
-        $this->checkCSRFParam();
         $project = $this->getProject();
         $group_id = $this->request->getIntegerParam('group_id');
 

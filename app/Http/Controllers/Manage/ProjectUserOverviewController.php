@@ -11,15 +11,15 @@
 
 namespace Jitamin\Controller\Manage;
 
-use Jitamin\Controller\BaseController;
-use Jitamin\Core\Security\Role;
+use Jitamin\Controller\Controller;
+use Jitamin\Foundation\Security\Role;
 use Jitamin\Model\TaskModel;
 use Jitamin\Model\UserModel;
 
 /**
  * Project User overview.
  */
-class ProjectUserOverviewController extends BaseController
+class ProjectUserOverviewController extends Controller
 {
     /**
      * Display the list of project managers.

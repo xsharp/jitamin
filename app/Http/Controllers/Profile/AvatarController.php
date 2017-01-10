@@ -11,14 +11,14 @@
 
 namespace Jitamin\Controller\Profile;
 
-use Jitamin\Controller\BaseController;
-use Jitamin\Core\ObjectStorage\ObjectStorageException;
-use Jitamin\Core\Thumbnail;
+use Jitamin\Controller\Controller;
+use Jitamin\Foundation\ObjectStorage\ObjectStorageException;
+use Jitamin\Foundation\Thumbnail;
 
 /**
  * Avatar Controller.
  */
-class AvatarController extends BaseController
+class AvatarController extends Controller
 {
     /**
      * Display avatar page.
@@ -51,7 +51,6 @@ class AvatarController extends BaseController
      */
     public function remove()
     {
-        $this->checkCSRFParam();
         $user = $this->getUser();
         $this->avatarModel->remove($user['id']);
         $this->userSession->refresh($user['id']);

@@ -12,7 +12,7 @@
 namespace Jitamin\Controller;
 
 use DateTime;
-use Jitamin\Core\Controller\AccessForbiddenException;
+use Jitamin\Foundation\Controller\AccessForbiddenException;
 use PicoFeed\Syndication\AtomFeedBuilder;
 use PicoFeed\Syndication\AtomItemBuilder;
 use PicoFeed\Syndication\FeedBuilder;
@@ -20,7 +20,7 @@ use PicoFeed\Syndication\FeedBuilder;
 /**
  * Atom/RSS Feed controller.
  */
-class FeedController extends BaseController
+class FeedController extends Controller
 {
     /**
      * RSS feed for a user.

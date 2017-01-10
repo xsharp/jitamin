@@ -11,9 +11,7 @@
 
 namespace Jitamin\Controller\Task;
 
-use Jitamin\Controller\BaseController;
-use Jitamin\Core\Controller\AccessForbiddenException;
-use Jitamin\Core\Controller\PageNotFoundException;
+use Jitamin\Controller\Controller;
 use Jitamin\Filter\TaskIdExclusionFilter;
 use Jitamin\Filter\TaskIdFilter;
 use Jitamin\Filter\TaskProjectFilter;
@@ -21,13 +19,15 @@ use Jitamin\Filter\TaskProjectsFilter;
 use Jitamin\Filter\TaskTitleFilter;
 use Jitamin\Formatter\TaskAutoCompleteFormatter;
 use Jitamin\Formatter\TaskGanttFormatter;
+use Jitamin\Foundation\Controller\AccessForbiddenException;
+use Jitamin\Foundation\Controller\PageNotFoundException;
 use Jitamin\Model\TaskModel;
 use Jitamin\Model\UserMetadataModel;
 
 /**
  * Task Controller.
  */
-class TaskController extends BaseController
+class TaskController extends Controller
 {
     /**
      * Show list view for projects.
@@ -288,8 +288,8 @@ class TaskController extends BaseController
      * @param array $values
      * @param array $errors
      *
-     * @throws \Jitamin\Core\Controller\AccessForbiddenException
-     * @throws \Jitamin\Core\Controller\PageNotFoundException
+     * @throws \Jitamin\Foundation\Controller\AccessForbiddenException
+     * @throws \Jitamin\Foundation\Controller\PageNotFoundException
      */
     public function edit(array $values = [], array $errors = [])
     {

@@ -11,15 +11,15 @@
 
 namespace Jitamin\Controller\Project\Board;
 
-use Jitamin\Controller\BaseController;
-use Jitamin\Core\Controller\AccessForbiddenException;
+use Jitamin\Controller\Controller;
 use Jitamin\Formatter\BoardFormatter;
+use Jitamin\Foundation\Controller\AccessForbiddenException;
 use Jitamin\Model\TaskModel;
 
 /**
  * Board controller.
  */
-class BoardController extends BaseController
+class BoardController extends Controller
 {
     /**
      * Display the public version of a board

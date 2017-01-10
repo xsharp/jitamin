@@ -11,12 +11,12 @@
 
 namespace Jitamin\Controller\Task;
 
-use Jitamin\Controller\BaseController;
+use Jitamin\Controller\Controller;
 
 /**
  * Task Duplication controller.
  */
-class TaskDuplicationController extends BaseController
+class TaskDuplicationController extends Controller
 {
     /**
      * Duplicate a task.
@@ -26,7 +26,6 @@ class TaskDuplicationController extends BaseController
         $task = $this->getTask();
 
         if ($this->request->getStringParam('confirmation') === 'yes') {
-            $this->checkCSRFParam();
             $task_id = $this->taskDuplicationModel->duplicate($task['id']);
 
             if ($task_id > 0) {

@@ -11,15 +11,15 @@
 
 namespace Jitamin\Controller\Project\Board;
 
-use Jitamin\Controller\BaseController;
-use Jitamin\Core\Controller\AccessForbiddenException;
+use Jitamin\Controller\Controller;
 use Jitamin\Formatter\BoardFormatter;
+use Jitamin\Foundation\Controller\AccessForbiddenException;
 use Jitamin\Model\UserMetadataModel;
 
 /**
  * Class BoardAjaxController.
  */
-class BoardAjaxController extends BaseController
+class BoardAjaxController extends Controller
 {
     /**
      * Save new task positions (Ajax request made by the drag and drop).

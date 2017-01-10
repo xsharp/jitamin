@@ -11,13 +11,13 @@
 
 namespace Jitamin\Controller\Project\Column;
 
-use Jitamin\Controller\BaseController;
-use Jitamin\Core\Controller\AccessForbiddenException;
+use Jitamin\Controller\Controller;
+use Jitamin\Foundation\Controller\AccessForbiddenException;
 
 /**
  * Class ColumnMoveRestrictionController.
  */
-class ColumnMoveRestrictionController extends BaseController
+class ColumnMoveRestrictionController extends Controller
 {
     /**
      * Show form to create a new column restriction.
@@ -73,34 +73,27 @@ class ColumnMoveRestrictionController extends BaseController
     }
 
     /**
-     * Confirm suppression.
-     */
-    public function confirm()
-    {
-        $project = $this->getProject();
-        $restriction_id = $this->request->getIntegerParam('restriction_id');
-
-        $this->response->html($this->helper->layout->project('project/column/move_restriction/remove', [
-            'project'     => $project,
-            'restriction' => $this->columnMoveRestrictionModel->getById($project['id'], $restriction_id),
-        ]));
-    }
-
-    /**
      * Remove a restriction.
      */
     public function remove()
     {
         $project = $this->getProject();
-        $this->checkCSRFParam();
         $restriction_id = $this->request->getIntegerParam('restriction_id');
 
-        if ($this->columnMoveRestrictionModel->remove($restriction_id)) {
-            $this->flash->success(t('Column restriction removed successfully.'));
-        } else {
-            $this->flash->failure(t('Unable to remove this restriction.'));
+        if ($this->request->isPost()) {
+            $this->request->checkCSRFToken();
+            if ($this->columnMoveRestrictionModel->remove($restriction_id)) {
+                $this->flash->success(t('Column restriction removed successfully.'));
+            } else {
+                $this->flash->failure(t('Unable to remove this restriction.'));
+            }
+
+            return $this->response->redirect($this->helper->url->to('Task/ProjectRoleController', 'show', ['project_id' => $project['id']]));
         }
 
-        $this->response->redirect($this->helper->url->to('Task/ProjectRoleController', 'show', ['project_id' => $project['id']]));
+        return $this->response->html($this->helper->layout->project('project/column/move_restriction/remove', [
+            'project'     => $project,
+            'restriction' => $this->columnMoveRestrictionModel->getById($project['id'], $restriction_id),
+        ]));
     }
 }
