@@ -11,6 +11,9 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
+$dotenv = new \Dotenv\Dotenv(__DIR__.'/../');
+$dotenv->load();
+
 $dbUrlParser = new PicoDb\UrlParser();
 if ($dbUrlParser->isEnvironmentVariableDefined()) {
     $dbSettings = $dbUrlParser->getSettings();

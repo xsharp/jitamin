@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Jitamin\Controller\Manage;
+namespace Jitamin\Http\Controllers\Manage;
 
-use Jitamin\Controller\Controller;
 use Jitamin\Filter\ProjectIdsFilter;
 use Jitamin\Filter\ProjectStatusFilter;
 use Jitamin\Filter\ProjectTypeFilter;
 use Jitamin\Formatter\ProjectGanttFormatter;
+use Jitamin\Http\Controllers\Controller;
 use Jitamin\Model\ProjectModel;
 
 /**
@@ -39,14 +39,15 @@ class ProjectController extends Controller
         $paginator = $this->paginator
             ->setUrl('Manage/ProjectController', 'index')
             ->setMax(20)
-            ->setOrder('name')
+            ->setOrder('id')
+            ->setDirection('DESC')
             ->setQuery($this->projectModel->getQueryColumnStats($project_ids))
             ->calculate();
 
         $this->response->html($this->helper->layout->app('manage/projects', [
             'paginator'   => $paginator,
             'nb_projects' => $nb_projects,
-            'title'       => t('Projects list'),
+            'title'       => t('Manage').' &raquo; '.t('Projects list'),
         ]));
     }
 
@@ -65,7 +66,7 @@ class ProjectController extends Controller
 
         $this->response->html($this->helper->layout->app('manage/gantt', [
             'projects' => $filter->format(new ProjectGanttFormatter($this->container)),
-            'title'    => t('Projects Gantt chart'),
+            'title'    => t('Manage').' &raquo; '.t('Projects Gantt chart'),
         ]));
     }
 }

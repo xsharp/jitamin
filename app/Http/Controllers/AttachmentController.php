@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Jitamin\Controller;
+namespace Jitamin\Http\Controllers;
 
 use Jitamin\Foundation\ObjectStorage\ObjectStorageException;
 
@@ -128,8 +128,8 @@ class AttachmentController extends Controller
     /**
      * Output file with cache.
      *
-     * @param array $file
-     * @param $mimetype
+     * @param array  $file
+     * @param string $mimetype
      */
     protected function renderFileWithCache(array $file, $mimetype)
     {

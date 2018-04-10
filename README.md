@@ -6,150 +6,166 @@ Jitamin
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jitamin/jitamin/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/jitamin/jitamin/?branch=master)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 
-Jitamin (读作/ˈdʒɪtəmɪn/) 是一款免费、开源，使用PHP语言开发的项目管理系统。Jitamin灵感来自于Vitamin，并结合了Just In Time(准时)和`敏`的拼音`min`，意指`效率`与`敏捷`是项目管理的维他命。
+Jitamin (pronounced /ˈdʒɪtəmɪn/) is a free software written in PHP, intended to handle the project management over the web. 
 
-![jitamin](https://cloud.githubusercontent.com/assets/15666864/21678087/312aab60-d378-11e6-8244-56882545970c.jpeg)
+**Jitamin** is inspired by vitamin. It also stands for JIT(Just In Time) and `Min`(The pinyin of `敏`).
 
-## 功能特性
+[简体中文](https://github.com/jitamin/jitamin/blob/master/README-zh_CN.md)
 
-* 简洁、美观的界面
-* 支持多主题
-* 可视化的任务管理
-* 支持列表、看板和甘特图等任务视图
-* 任务可拖拽移动
-* 多语言，默认带英文和简体中文语言包
-* 过滤搜索
-* 可创建团队项目和个人项目
-* 支持任务、子任务、附件和评论
-* 动作自动触发
-* 可视化的统计
-* 第三方集成
-* 支持插件
 
-[版本更新说明](https://github.com/jitamin/jitamin/blob/master/ChangeLog.md)
+![jitamin](http://jitamin.com/img/screenshot.png?v1)
 
-## 下一阶段要实现的功能
+## Features
 
-- [ ] 通过插件与Fixhub集成
-- [ ] 集成twig模板引擎
+* Get a clear visual overview of your project
+* Multiple themes
+* Project/task management
+* Support task list, kanban and Gantt views
+* Drag and drop tasks
+* Multiple language support, build-in English and Chinese language supports
+* Filter on search results
+* Support personal projects and team projects
+* Support tasks, sub-tasks, attachment, comments
+* Auto-trigger actions
+* Visualized statistics result
+* Support third part integration
+* Support plugins
 
-## 安装环境要求
+[Change Logs](https://github.com/jitamin/jitamin/blob/master/ChangeLog.md)
 
-- [PHP](http://www.php.net) 5.6或更高(推荐使用PHP7)
-- 数据库, 推荐使用[MySQL](https://www.mysql.com) 或 [PostgreSQL](http://www.postgresql.org)。 当然[SQLite](https://www.sqlite.org)也可以运行。
-- [Composer](https://getcomposer.org)
+## Requirements
 
-## 安装手册
+There are a few things that you will need to have set up in order to run Jitamin:
 
-一. 克隆代码
+- A web server: **Nginx**, **Apache** (with mod_rewrite), or **Lighttpd**
+- [PHP](http://www.php.net) 5.6+ (PHP7 is recommended)
+- Database: [MySQL](https://www.mysql.com) is recommended, also you can choose [PostgreSQL](http://www.postgresql.org) or[SQLite](https://www.sqlite.org)
+- [Composer](https://getcomposer.org) 
+
+## Installation
+
+### Get the jitamin source code
 
 ```shell
+$ cd /var/www
 $ git clone https://github.com/jitamin/jitamin.git
+$ cd jitamin
 ```
 
-二. 设置配置文件
+### Setting the config file
 
 ```shell
-$ cp config/config{.default,}.php
+$ cp .env.example .env
 ```
-> 根据实际情况修改 `config/config.php` 相关配置文件。
+> Adjust the `.env` according to your environment, especially the database settings.
 
-三. 安装依赖包
+### Install the PHP dependency packages
 
 ```shell
 $ composer install -o --no-dev
 ```
+### Create database,and setting env 
+```shell
+CREATE DATABASE jitamin;
+CREATE USER 'jitamin'@'localhost' IDENTIFIED BY 'jitamin';
+GRANT ALL PRIVILEGES ON jitamin.* TO 'jitamin'@'localhost' IDENTIFIED BY 'jitamin' WITH GRANT OPTION;
+```
+then, edit .env file, change databases,username and password.
+and edit config/config.php file.
 
-四. 安装数据库迁移和初始数据
+### Migrate the database and initialize the database
 
-- 创建数据表
+- create database tables
 ```shell
 vendor/bin/phinx migrate
 ```
 
-- 安装初始数据
+- initialize database
 ```shell
 vendor/bin/phinx seed:run
 ```
-> Windows环境请将上述命令中的 `vendor/bin/phinx` 替换为 `vendor\robmorgan\phinx\bin\phinx.bat`
+> For installation under Windows, you should replace the command `vendor/bin/phinx` with `vendor\robmorgan\phinx\bin\phinx.bat`.
 
-五. 确保bootstrap/cache和storage目录可写。
+### Confirm that the directory `bootstrap/cache` and `storage` have write permission
 
 ```shell
 $ chmod -R 0777 bootstrap/cache
 $ chmod -R 0777 storage
 ```
-> 可选步骤
+> Optional steps
 
 ```shell
 $ php artisan config:cache
 $ php artisan route:cache
 ```
 
-六. 通过浏览器访问
+### Access the service through web browser
 
-安装完成后，请通过浏览器访问你的Jitamin网址，如：http://jitamin.dev
+Open your web browser, enter the address such as http://jitamin.yourdomain.com to  access the web service.
+The initial Super Administrator's user name and password are listed below:
 
-初始管理员的用户名和密码：
+- **username:** `admin` or `admin@admin.com`
+- **password:** `admin`
 
-- **用户名:** `admin` or `admin@admin.com`
-- **密码:** `admin`
+## Upgrade steps
 
-## 升级步骤
-
-一. 获取最新代码
+### Fetch the latest source code
 
 ```shell
 $ git fetch --all
-$ git checkout {latest_tag} // 请将 {latest_tag} 修改为最新的tag，比如：0.3.0
+$ git checkout latest_tag // Change the  latest_tag to the latested release git tag, such as 0.4.4
 ```
 
-二. 更新依赖
+### Update the dependencies
 
 ```shell
 $ composer install -o --no-dev
 ```
 
-三. 更新数据表
+### Update the database
 
 ```shell
 vendor/bin/phinx migrate
 ```
-> Windows环境请将上述命令中的 `vendor/bin/phinx` 替换为 `vendor\robmorgan\phinx\bin\phinx.bat`
+> For updating under Windows, you should replace the command `vendor/bin/phinx` with `vendor\robmorgan\phinx\bin\phinx.bat`.
 
-> 可选步骤
+> Optional steps
 
 ```shell
 $ php artisan config:cache
 $ php artisan route:cache
 ```
 
-## 系统演示
+## Demo
 
-体验Jitamin, 请访问 [http://jitamin.com](http://jitamin.com):
+We have a site to demostrate how Jitamin works, please visit [http://jitamin.com](http://jitamin.com). You can login by either of three kinds of account below.
 
-一. 普通用户
+### Github account
 
-- **用户名:** `test` or `test@test.com`
-- **密码:** `test123`
+> Press the button `Login with my Github Account`
 
-二. 管理员用户
+### Test user
 
-- **用户名:** `jitamin` or `jitamin@jitamin.com`
-- **密码:** `jitamin`
+- **username:** `test` or `test@test.com`
+- **password:** `test123`
 
-## 开发相关
+### Manager
 
-Jitamin代码里自带编译后的前端静态资源。如果你不想修改前端样式，请直接忽略本环节。
+- **username:** `jitamin` or `jitamin@jitamin.com`
+- **password:** `jitamin`
 
-工具集：
+## Development
+
+Jitamin has its own pre-compiled static resources, if you don't want to change the web frontend styles, just skip this section.
+
+Tools：
 
 - Node.js
 - Bower
 - Gulp
 
 ```shell
-npm install --global gulp
+yarn install || npm install
 bower install
 gulp
 ```

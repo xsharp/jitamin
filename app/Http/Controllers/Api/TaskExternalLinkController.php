@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Jitamin\Controller\Api;
+namespace Jitamin\Http\Controllers\Api;
 
 use Jitamin\Foundation\ExternalLink\ExternalLinkManager;
 use Jitamin\Foundation\ExternalLink\ExternalLinkProviderNotFound;
@@ -32,6 +32,8 @@ class TaskExternalLinkController extends Controller
 
     /**
      * Get a dictionary of supported dependency types by the provider.
+     *
+     * @param string $providerName
      *
      * @return array
      */

@@ -30,6 +30,7 @@ class SkinModel extends Model
         // Sorted by value
         $skins = [
             'default' => t('Default'),
+            'black'   => t('Black'),
             'blue'    => t('Blue'),
             'green'   => t('Green'),
             'purple'  => t('Purple'),
@@ -70,8 +71,8 @@ class SkinModel extends Model
     {
         // Sorted by value
         $layouts = [
-            'fluid'   => t('Fluid'),
-            'fixed'   => t('Fixed'),
+            'fluid' => t('Fluid'),
+            'fixed' => t('Fixed'),
         ];
 
         if ($prepend) {
@@ -107,7 +108,7 @@ class SkinModel extends Model
         // Sorted by value
         $dashboards = [
             'projects'   => t('My projects'),
-            'stars'      => t('My stars'),
+            'stars'      => t('Starred projects'),
             'calendar'   => t('My calendar'),
             'activities' => t('My activities'),
             'tasks'      => t('My tasks'),

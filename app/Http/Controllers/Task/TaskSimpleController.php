@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Jitamin\Controller\Task;
+namespace Jitamin\Http\Controllers\Task;
 
-use Jitamin\Controller\Controller;
+use Jitamin\Http\Controllers\Controller;
 
 /**
  * Class TaskSimpleController.
@@ -26,17 +26,21 @@ class TaskSimpleController extends Controller
      */
     public function create(array $values = [], array $errors = [])
     {
+        $values['project_id'] = $this->request->getIntegerParam('project_id', 0);
+        $values['column_id'] = $this->request->getIntegerParam('column_id', 0);
+        $values['swimlane_id'] = $this->request->getIntegerParam('swimlane_id', 0);
+
         $projects = $this->projectUserRoleModel->getActiveProjectsByUser($this->userSession->getId());
 
         $this->response->html($this->template->render('task/create_simple', [
-            'values'          => $values,
-            'errors'          => $errors,
-            'projects'        => $projects,
+            'values'   => $values,
+            'errors'   => $errors,
+            'projects' => $projects,
         ]));
     }
 
     /**
-     * Save all tasks in the database.
+     * Validate and store a new simple task.
      */
     public function store()
     {
@@ -54,6 +58,9 @@ class TaskSimpleController extends Controller
             $this->taskModel->create([
                     'title'       => $values['title'],
                     'project_id'  => $project['id'],
+                    'column_id'   => $values['column_id'],
+                    'swimlane_id' => $values['swimlane_id'],
+                    'owner_id'    => $this->userSession->getId(),
                 ]);
             $this->flash->success(t('Task created successfully.'));
             $this->response->redirect($this->helper->url->to(

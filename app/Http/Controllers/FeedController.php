@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Jitamin\Controller;
+namespace Jitamin\Http\Controllers;
 
 use DateTime;
-use Jitamin\Foundation\Controller\AccessForbiddenException;
+use Jitamin\Foundation\Exceptions\AccessForbiddenException;
 use PicoFeed\Syndication\AtomFeedBuilder;
 use PicoFeed\Syndication\AtomItemBuilder;
 use PicoFeed\Syndication\FeedBuilder;
@@ -38,7 +38,7 @@ class FeedController extends Controller
         $events = $this->helper->projectActivity->getProjectsEvents($this->projectPermissionModel->getActiveProjectIds($user['id']));
 
         $feedBuilder = AtomFeedBuilder::create()
-            ->withTitle(e('Project activities for %s', $this->helper->user->getFullname($user)))
+            ->withTitle(l('Project activities for %s', $this->helper->user->getFullname($user)))
             ->withFeedUrl($this->helper->url->to('FeedController', 'user', ['token' => $user['token']], '', true))
             ->withSiteUrl($this->helper->url->base())
             ->withDate(new DateTime());
@@ -61,7 +61,7 @@ class FeedController extends Controller
         $events = $this->helper->projectActivity->getProjectEvents($project['id']);
 
         $feedBuilder = AtomFeedBuilder::create()
-            ->withTitle(e('%s\'s activity', $project['name']))
+            ->withTitle(l('%s\'s activity', $project['name']))
             ->withFeedUrl($this->helper->url->to('FeedController', 'project', ['token' => $project['token']], '', true))
             ->withSiteUrl($this->helper->url->base())
             ->withDate(new DateTime());

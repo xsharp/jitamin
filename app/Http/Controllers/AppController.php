@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Jitamin\Controller;
+namespace Jitamin\Http\Controllers;
 
 use Jitamin\Foundation\Base;
 
@@ -30,8 +30,8 @@ class AppController extends Base
             $this->response->json(['message' => $message ?: t('Access Forbidden')], 403);
         } else {
             $this->response->html($this->template->render('errors/403', [
-                'title'     => t('Access Forbidden'),
-            ]));
+                'title' => t('Access Forbidden'),
+            ]), 403);
         }
     }
 
@@ -43,7 +43,7 @@ class AppController extends Base
     public function notFound($withoutLayout = false)
     {
         $this->response->html($this->template->render('errors/404', [
-            'title'     => t('Page not found'),
-        ]));
+            'title' => t('Page not found'),
+        ]), 404);
     }
 }

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Jitamin\Controller\Api;
+namespace Jitamin\Http\Controllers\Api;
 
 use Jitamin\Foundation\Base;
 use Jitamin\Policy\MethodPolicy;
@@ -24,7 +24,7 @@ abstract class Controller extends Base
     /**
      * Before action.
      *
-     * @param string $role
+     * @param string $method
      *
      * @return void
      */

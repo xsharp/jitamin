@@ -14,34 +14,37 @@ $is_private_project_enabled = $this->app->setting('disable_private_project', 0) 
                 <li <?= $this->app->setActive('SearchController', 'index') ?>>
                     <?= $this->url->link('<i class="fa fa-search"></i><br />'.t('Search'), 'SearchController', 'index') ?>
                 </li>
-                <li <?= $this->app->setActive('Dashboard/DashboardController', 'notifications') ?>>
+                <li <?= $this->app->setActive('Dashboard/NotificationController', 'index') ?>>
                     <?php if ($this->user->hasNotifications()): ?>
-                        <?= $this->url->link('<i class="fa fa-bell web-notification-icon"></i><br />'.t('Notice'), 'Dashboard/DashboardController', 'notifications', [], false, '', t('You have unread notifications')) ?>
+                        <?= $this->url->link('<i class="fa fa-bell web-notification-icon"></i><br />'.t('Notice'), 'Dashboard/NotificationController', 'index', [], false, '', t('You have unread notifications')) ?>
                     <?php else: ?>
-                        <?= $this->url->link('<i class="fa fa-bell"></i><br />'.t('Notice'), 'Dashboard/DashboardController', 'notifications', [], false, '', t('You have no unread notifications')) ?>
+                        <?= $this->url->link('<i class="fa fa-bell"></i><br />'.t('Notice'), 'Dashboard/NotificationController', 'index', [], false, '', t('You have no unread notifications')) ?>
                     <?php endif ?>
                 </li>
-                <?php if ($has_project_creation_access || (!$has_project_creation_access && $is_private_project_enabled) || $has_task_creation_access): ?>
                 <hr/>
+                <li>
+                    <?= $this->url->link('<i class="fa fa-inbox"></i><br />'.t('Projects'), 'Dashboard/DashboardController', 'slider', [], false, 'slider-menu') ?>
+                </li>
+                <?php if ($has_project_creation_access || (!$has_project_creation_access && $is_private_project_enabled) || $has_task_creation_access): ?>
                 <li class="dropdown">
                     <a href="#" class="dropdown-menu"><i class="fa fa-plus-circle"></i><br /><?= t('Create') ?></a>
                     <ul>
                         <?php if ($has_project_creation_access): ?>
                             <li><i class="fa fa-cube"></i>
-                                <?= $this->url->link(t('New project'), 'Project/ProjectController', 'create', [], false, 'popover') ?>
+                                <?= $this->url->link(t('New project'), 'Project/ProjectController', 'create', [], false, 'popover small') ?>
                             </li>
                         <?php endif ?>
                         <?php if ($is_private_project_enabled): ?>
                             <li>
                                 <i class="fa fa-lock"></i>
-                                <?= $this->url->link(t('New private project'), 'Project/ProjectController', 'createPrivate', [], false, 'popover') ?>
+                                <?= $this->url->link(t('New private project'), 'Project/ProjectController', 'createPrivate', [], false, 'popover small') ?>
                             </li>
                         <?php endif ?>
                         <?php if ($has_task_creation_access): ?>
                         <div class="divider"></div>
                         <li>
                             <i class="fa fa-tasks"></i>
-                            <?= $this->url->link(t('New task'), 'Task/TaskSimpleController', 'create', [], false, 'popover') ?>
+                            <?= $this->url->link(t('New task'), 'Task/TaskSimpleController', 'create', [], false, 'popover small') ?>
                         </li>
                         <?php endif ?>
                         <?= $this->hook->render('template:sidebar:creation-dropdown') ?>
@@ -62,5 +65,8 @@ $is_private_project_enabled = $this->app->setting('disable_private_project', 0) 
             </ul>
         </div>
         <div class="menu-bottom"></div>
+    </div>
+    <div class="sidecontent">
+        <span id="app-loading-icon">&nbsp;<i class="fa fa-spinner fa-spin"></i></span>
     </div>
 </div>

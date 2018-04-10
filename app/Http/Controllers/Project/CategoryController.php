@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Jitamin\Controller\Project;
+namespace Jitamin\Http\Controllers\Project;
 
-use Jitamin\Controller\Controller;
-use Jitamin\Foundation\Controller\PageNotFoundException;
+use Jitamin\Foundation\Exceptions\PageNotFoundException;
+use Jitamin\Http\Controllers\Controller;
 
 /**
  * Category Controller.
@@ -37,6 +37,25 @@ class CategoryController extends Controller
             'errors'     => $errors,
             'project'    => $project,
             'title'      => t('Categories'),
+        ]));
+    }
+
+    /**
+     * Create a new category.
+     *
+     * @param array $values
+     * @param array $errors
+     *
+     * @throws \Jitamin\Foundation\Exceptions\PageNotFoundException
+     */
+    public function create(array $values = [], array $errors = [])
+    {
+        $project = $this->getProject();
+
+        $this->response->html($this->template->render('project/category/create', [
+            'values'  => $values + ['project_id' => $project['id']],
+            'errors'  => $errors,
+            'project' => $project,
         ]));
     }
 

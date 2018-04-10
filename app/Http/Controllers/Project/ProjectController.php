@@ -9,10 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Jitamin\Controller\Project;
+namespace Jitamin\Http\Controllers\Project;
 
-use Jitamin\Controller\Controller;
-use Jitamin\Model\ProjectModel;
+use Jitamin\Http\Controllers\Controller;
 
 /**
  * Class ProjectController.
@@ -25,6 +24,8 @@ class ProjectController extends Controller
     public function show()
     {
         $project = $this->getProject();
+
+        $this->userSession->setRecentProject($project['id']);
 
         list($className, $method) = $this->helper->app->getProjectDefaultView($project['default_view'], true);
         $controllerObject = new $className($this->container);

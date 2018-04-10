@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Jitamin\Controller\Api;
+namespace Jitamin\Http\Controllers\Api;
 
 use Jitamin\Policy\ActionPolicy;
 use Jitamin\Policy\ProjectPolicy;
@@ -42,7 +42,7 @@ class ActionController extends Controller
     /**
      * Get list of compatible events for a given action.
      *
-     * @param string $name
+     * @param string $action_name
      *
      * @return array
      */

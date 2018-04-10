@@ -31,7 +31,7 @@
                     ) ?>
                 </td>
                 <td>
-                    <?= $this->url->link(t('Remove'), 'Manage/ProjectPermissionController', 'removeUser', ['project_id' => $project['id'], 'user_id' => $user['id']], true) ?>
+                    <?= $this->url->link(t('Remove'), 'Manage/ProjectPermissionController', 'removeUser', ['project_id' => $project['id'], 'user_id' => $user['id']], false, 'popover') ?>
                 </td>
             </tr>
             <?php endforeach ?>
@@ -57,7 +57,7 @@
 
             <?= $this->form->select('role', $roles, $values, $errors) ?>
 
-            <button type="submit" class="btn btn-info"><?= t('Add') ?></button>
+            <button type="submit" class="btn btn-success"><?= t('Add') ?></button>
         </form>
     </div>
     <?php endif ?>
@@ -119,7 +119,7 @@
 
             <?= $this->form->select('role', $roles, $values, $errors) ?>
 
-            <button type="submit" class="btn btn-info"><?= t('Add') ?></button>
+            <button type="submit" class="btn btn-success"><?= t('Add') ?></button>
         </form>
     </div>
     <?php endif ?>
@@ -135,7 +135,7 @@
     <?= $this->form->checkbox('is_everybody_allowed', t('Allow everybody to access to this project'), 1, $project['is_everybody_allowed']) ?>
 
     <div class="form-actions">
-        <button type="submit" class="btn btn-info"><?= t('Save') ?></button>
+        <button type="submit" class="btn btn-success"><?= t('Save') ?></button>
     </div>
 </form>
 <?php endif ?>

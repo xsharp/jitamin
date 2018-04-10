@@ -9,10 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Jitamin\Controller\Admin;
+namespace Jitamin\Http\Controllers\Admin;
 
-use Jitamin\Controller\Controller;
 use Jitamin\Foundation\Security\Role;
+use Jitamin\Http\Controllers\Controller;
+use Jitamin\Model\UserModel;
 use Jitamin\Notification\MailNotification;
 
 /**
@@ -25,10 +26,16 @@ class UserController extends Controller
      */
     public function index()
     {
-        $paginator = $this->userPagination->getListingPaginator();
+        $paginator = $this->paginator
+            ->setUrl('Admin/UserController', 'index')
+            ->setMax(30)
+            ->setOrder(UserModel::TABLE.'.id')
+            ->setDirection('DESC')
+            ->setQuery($this->userModel->getQuery())
+            ->calculate();
 
         $this->response->html($this->helper->layout->admin('admin/user/index', [
-            'title'     => t('Users').' ('.$paginator->getTotal().')',
+            'title'     => t('Admin').' &raquo; '.t('Users management'),
             'paginator' => $paginator,
         ], 'admin/user/subside'));
     }
@@ -94,8 +101,8 @@ class UserController extends Controller
      * @param array $values
      * @param array $errors
      *
-     * @throws \Jitamin\Foundation\Controller\AccessForbiddenException
-     * @throws \Jitamin\Foundation\Controller\PageNotFoundException
+     * @throws \Jitamin\Foundation\Exceptions\AccessForbiddenException
+     * @throws \Jitamin\Foundation\Exceptions\PageNotFoundException
      */
     public function changeAuthentication(array $values = [], array $errors = [])
     {
@@ -116,8 +123,8 @@ class UserController extends Controller
     /**
      * Save authentication.
      *
-     * @throws \Jitamin\Foundation\Controller\AccessForbiddenException
-     * @throws \Jitamin\Foundation\Controller\PageNotFoundException
+     * @throws \Jitamin\Foundation\Exceptions\AccessForbiddenException
+     * @throws \Jitamin\Foundation\Exceptions\PageNotFoundException
      */
     public function saveAuthentication()
     {

@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Jitamin\Controller\Admin;
+namespace Jitamin\Http\Controllers\Admin;
 
-use Jitamin\Controller\Controller;
 use Jitamin\Formatter\GroupAutoCompleteFormatter;
+use Jitamin\Http\Controllers\Controller;
 
 /**
  * Group Controller.
@@ -32,7 +32,7 @@ class GroupController extends Controller
             ->calculate();
 
         $this->response->html($this->helper->layout->admin('admin/group/index', [
-            'title'     => t('Groups').' ('.$paginator->getTotal().')',
+            'title'     => t('Admin').' &raquo; '.t('Groups management'),
             'paginator' => $paginator,
         ], 'admin/group/subside'));
     }

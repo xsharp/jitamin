@@ -27,9 +27,9 @@ input
       color: color('lighter')
   &[type="number"]:focus, &[type="date"]:focus, &[type="email"]:focus, &[type="password"]:focus, &[type="text"]:focus
     color: color('dark')
-    border-color: rgba(82, 168, 236, 0.8)
+    border-color: #3c8dbc
     outline: 0
-    box-shadow: 0 0 8px rgba(82, 168, 236, 0.6)
+    box-shadow: 0 0 4px #fbeed5
 
 input[type="number"]
   width: 70px
@@ -46,9 +46,9 @@ input[type="text"]:not(.input-addon-field)
 
 textarea:focus
   color: color('dark')
-  border-color: rgba(82, 168, 236, 0.8)
+  border-color: #3c8dbc
   outline: 0
-  box-shadow: 0 0 8px rgba(82, 168, 236, 0.6)
+  box-shadow: 0 0 4px #fbeed5
 
 textarea
   border: 1px solid #ccc
@@ -71,11 +71,16 @@ select[multiple]
 .tag-autocomplete
   width: 400px
 
+.ui-autocomplete
+  z-index: 200
+
 span.select2-container
   margin-top: 2px
 
 .form-actions
-  padding-top: 20px
+  border-top: 1px dotted #ccc
+  margin-top: 10px
+  padding-top: 10px
   clear: both
 
 .form-required

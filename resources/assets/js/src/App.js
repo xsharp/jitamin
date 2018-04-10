@@ -30,6 +30,7 @@ Jitamin.App.prototype.execute = function() {
         }
     }
 
+    this.init();
     this.focus();
     this.sidebarToggle();
     this.chosen();
@@ -37,6 +38,7 @@ Jitamin.App.prototype.execute = function() {
     this.datePicker();
     this.autoComplete();
     this.tagAutoComplete();
+    this.sliderToggle();
 
     new Vue({
         el: 'body'
@@ -65,12 +67,24 @@ Jitamin.App.prototype.keyboardShortcuts = function() {
     Mousetrap.bindGlobal("esc", function() {
         self.get("Popover").close();
         self.get("Dropdown").close();
+        self.get("Slider").close();
     });
 
     // Show keyboard shortcut
     Mousetrap.bind("?", function() {
         self.get("Popover").open($("body").data("keyboard-shortcut-url"));
     });
+};
+
+Jitamin.App.prototype.init = function() {
+    var wrapper = $('.wrapper');
+    if (window.localStorage && window.localStorage['jitamin.stickySidebar'] == 'true') {
+        wrapper.removeClass("wrapper-collapsed");
+        wrapper.find(".sidebar").show();
+    } else {
+        wrapper.addClass("wrapper-collapsed");
+        wrapper.find(".sidebar").hide();
+    }
 };
 
 Jitamin.App.prototype.focus = function() {
@@ -86,6 +100,7 @@ Jitamin.App.prototype.focus = function() {
 };
 
 Jitamin.App.prototype.sidebarToggle = function() {
+
     $(document).on("click", ".sidebar-toggle", function(e) {
         var wrapper = $(this).parents(".wrapper");
         e.preventDefault();
@@ -93,9 +108,24 @@ Jitamin.App.prototype.sidebarToggle = function() {
         if (wrapper.hasClass("wrapper-collapsed")) {
             wrapper.find(".sidebar").show("slow");
             wrapper.removeClass("wrapper-collapsed");
+            window.localStorage.setItem('jitamin.stickySidebar', true);
         } else {
             wrapper.find(".sidebar").hide("slow");
             wrapper.addClass("wrapper-collapsed");
+            window.localStorage.setItem('jitamin.stickySidebar', false);
+        }
+    });
+};
+
+Jitamin.App.prototype.sliderToggle = function() {
+    var self = this;
+    $(document).on("click", ".slider-menu", function(e) {
+        e.preventDefault();
+        var sidecontent = $('.sidecontent');
+        if(sidecontent.width() > 0) {
+            self.get('Slider').close()
+        } else {
+            self.get("Slider").open($(this).attr('href'));
         }
     });
 };
@@ -183,11 +213,11 @@ Jitamin.App.prototype.hasId = function(id) {
 };
 
 Jitamin.App.prototype.showLoadingIcon = function() {
-    $("body").append('<span id="app-loading-icon">&nbsp;<i class="fa fa-spinner fa-spin"></i></span>');
+    $("body").append('<span class="app-loading-icon">&nbsp;<i class="fa fa-spinner fa-spin"></i></span>');
 };
 
 Jitamin.App.prototype.hideLoadingIcon = function() {
-    $("#app-loading-icon").remove();
+    $(".app-loading-icon").remove();
 };
 
 Jitamin.App.prototype.formatDuration = function(d) {

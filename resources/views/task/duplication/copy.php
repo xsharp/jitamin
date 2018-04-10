@@ -27,7 +27,7 @@
 
         <?= $this->form->label(t('Swimlane'), 'swimlane_id') ?>
         <?= $this->form->select('swimlane_id', $swimlanes_list, $values) ?>
-        <p class="form-help"><?= t('Current swimlane: %s', $task['swimlane_name'] ?: e($task['default_swimlane'])) ?></p>
+        <p class="form-help"><?= t('Current swimlane: %s', $task['swimlane_name'] ?: $this->text->e($task['default_swimlane'])) ?></p>
 
         <?= $this->form->label(t('Column'), 'column_id') ?>
         <?= $this->form->select('column_id', $columns_list, $values) ?>
@@ -35,14 +35,14 @@
 
         <?= $this->form->label(t('Category'), 'category_id') ?>
         <?= $this->form->select('category_id', $categories_list, $values) ?>
-        <p class="form-help"><?= t('Current category: %s', $task['category_name'] ?: e('no category')) ?></p>
+        <p class="form-help"><?= t('Current category: %s', $task['category_name'] ?: l('no category')) ?></p>
 
         <?= $this->form->label(t('Assignee'), 'owner_id') ?>
         <?= $this->form->select('owner_id', $users_list, $values) ?>
-        <p class="form-help"><?= t('Current assignee: %s', ($task['assignee_name'] ?: $task['assignee_username']) ?: e('not assigned')) ?></p>
+        <p class="form-help"><?= t('Current assignee: %s', ($task['assignee_name'] ?: $task['assignee_username']) ?: l('not assigned')) ?></p>
 
         <div class="form-actions">
-            <button type="submit" class="btn btn-info"><?= t('Save') ?></button>
+            <button type="submit" class="btn btn-success"><?= t('Save') ?></button>
             <?= t('or') ?>
             <?= $this->url->link(t('cancel'), 'Task/TaskController', 'show', ['task_id' => $task['id'], 'project_id' => $task['project_id']], false, 'close-popover') ?>
         </div>

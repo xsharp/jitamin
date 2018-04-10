@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Jitamin\Controller\Admin;
+namespace Jitamin\Http\Controllers\Admin;
 
-use Jitamin\Controller\Controller;
-use Jitamin\Foundation\Controller\PageNotFoundException;
+use Jitamin\Foundation\Exceptions\PageNotFoundException;
+use Jitamin\Http\Controllers\Controller;
 
 /**
  * Link Controller.
@@ -31,7 +31,7 @@ class LinkController extends Controller
             'links'  => $this->linkModel->getMergedList(),
             'values' => $values,
             'errors' => $errors,
-            'title'  => t('Task\'s links'),
+            'title'  => t('Admin').' &raquo; '.t('Link settings'),
         ], 'admin/link/subside'));
     }
 

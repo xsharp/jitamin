@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Jitamin\Controller\Admin;
+namespace Jitamin\Http\Controllers\Admin;
 
-use Jitamin\Controller\Controller;
 use Jitamin\Foundation\Csv;
+use Jitamin\Http\Controllers\Controller;
 
 /**
  * User Import controller.
@@ -65,8 +65,8 @@ class UserImportController extends Controller
     /**
      * Process file.
      *
-     * @param array $values
-     * @param       $filename
+     * @param array  $values
+     * @param string $filename
      */
     protected function importFile(array $values, $filename)
     {

@@ -14,6 +14,8 @@
 | Please DO NOT modify me.
 |--------------------------------------------------------------------------
 */
+// Register The Auto Loader
+require __DIR__.'/bootstrap/autoload.php';
 
 $db = require __DIR__.'/config/config.php';
 
@@ -34,7 +36,7 @@ return [
             'port'    => $db['db_connections']['mysql']['port'],
             'charset' => 'utf8',
         ],
-        'postgres' => [
+        'pgsql' => [
             'adapter' => 'pgsql',
             'host'    => $db['db_connections']['pgsql']['host'],
             'name'    => $db['db_connections']['pgsql']['database'],

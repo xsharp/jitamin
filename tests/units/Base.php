@@ -17,7 +17,6 @@ require_once __DIR__.'/../../bootstrap/bootstrap.php';
 use Composer\Autoload\ClassLoader;
 use Jitamin\Foundation\Session\FlashMessage;
 use Jitamin\Foundation\Session\SessionStorage;
-use Jitamin\Providers\ActionProvider;
 use SimpleLogger\Logger;
 use Symfony\Component\EventDispatcher\Debug\TraceableEventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -44,7 +43,7 @@ abstract class Base extends PHPUnit_Framework_TestCase
             $pdo->exec('DROP DATABASE '.DB_NAME);
             $pdo->exec('CREATE DATABASE '.DB_NAME);
             $pdo = null;
-        } elseif (DB_DRIVER === 'postgres') {
+        } elseif (DB_DRIVER === 'pgsql') {
             $pdo = new PDO('pgsql:host='.DB_HOSTNAME, DB_USERNAME, DB_PASSWORD);
             $pdo->exec('DROP DATABASE '.DB_NAME);
             $pdo->exec('CREATE DATABASE '.DB_NAME.' WITH OWNER '.DB_USERNAME);
@@ -62,17 +61,17 @@ abstract class Base extends PHPUnit_Framework_TestCase
         $this->process->run();
 
         $this->container = new Pimple\Container();
-        $this->container->register(new Jitamin\Providers\CacheProvider());
-        $this->container->register(new Jitamin\Providers\HelperProvider());
-        $this->container->register(new Jitamin\Providers\AuthenticationProvider());
-        $this->container->register(new Jitamin\Providers\DatabaseProvider());
-        $this->container->register(new Jitamin\Providers\ClassProvider());
-        $this->container->register(new Jitamin\Providers\NotificationProvider());
-        $this->container->register(new Jitamin\Providers\RouteProvider());
-        $this->container->register(new Jitamin\Providers\AvatarProvider());
-        $this->container->register(new Jitamin\Providers\FilterProvider());
-        $this->container->register(new Jitamin\Providers\JobProvider());
-        $this->container->register(new Jitamin\Providers\QueueProvider());
+        $this->container->register(new Jitamin\Providers\CacheServiceProvider());
+        $this->container->register(new Jitamin\Providers\HelperServiceProvider());
+        $this->container->register(new Jitamin\Providers\AuthServiceProvider());
+        $this->container->register(new Jitamin\Providers\DatabaseServiceProvider());
+        $this->container->register(new Jitamin\Providers\ClassServiceProvider());
+        $this->container->register(new Jitamin\Providers\NotificationServiceProvider());
+        $this->container->register(new Jitamin\Providers\RouteServiceProvider());
+        $this->container->register(new Jitamin\Providers\AvatarServiceProvider());
+        $this->container->register(new Jitamin\Providers\FilterServiceProvider());
+        $this->container->register(new Jitamin\Providers\JobServiceProvider());
+        $this->container->register(new Jitamin\Providers\QueueServiceProvider());
 
         $this->container['dispatcher'] = new TraceableEventDispatcher(
             new EventDispatcher(),
@@ -109,7 +108,7 @@ abstract class Base extends PHPUnit_Framework_TestCase
             ->getMock();
 
         $this->container['sessionStorage'] = new SessionStorage();
-        $this->container->register(new ActionProvider());
+        $this->container->register(new Jitamin\Providers\ActionServiceProvider());
 
         $this->container['flash'] = function ($c) {
             return new FlashMessage($c);

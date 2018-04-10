@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Jitamin\Middleware;
+namespace Jitamin\Http\Middleware;
 
 use Jitamin\Foundation\Base;
 use JsonRPC\Exception\AccessDeniedException;
@@ -40,6 +40,7 @@ class ApiAuthenticationMiddleware extends Base implements MiddlewareInterface
             $this->userSession->initialize($this->userModel->getByUsername($username));
         } elseif (!$this->isAppAuthenticated($username, $password)) {
             $this->logger->error('API authentication failure for '.$username);
+
             throw new AuthenticationFailureException('Wrong credentials');
         }
     }

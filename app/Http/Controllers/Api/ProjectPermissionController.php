@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Jitamin\Controller\Api;
+namespace Jitamin\Http\Controllers\Api;
 
 use Jitamin\Foundation\Security\Role;
 use Jitamin\Policy\ProjectPolicy;
@@ -36,8 +36,8 @@ class ProjectPermissionController extends Controller
     /**
      * Get list of users that can be assigned to a task (only Manager and Member).
      *
-     * @param int  $project_id Project id
-     * @param bool $unassigned Prepend the 'Unassigned' value
+     * @param int  $project_id         Project id
+     * @param bool $prepend_unassigned Prepend the 'Unassigned' value
      *
      * @return array
      */

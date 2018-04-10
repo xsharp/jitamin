@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Jitamin\Controller\Project;
+namespace Jitamin\Http\Controllers\Project;
 
-use Jitamin\Controller\Controller;
-use Jitamin\Foundation\Controller\AccessForbiddenException;
+use Jitamin\Foundation\Exceptions\AccessForbiddenException;
 use Jitamin\Foundation\Security\Role;
+use Jitamin\Http\Controllers\Controller;
 
 /**
  * Custom Filter Controller.
@@ -26,7 +26,7 @@ class CustomFilterController extends Controller
      * @param array $values
      * @param array $errors
      *
-     * @throws \Jitamin\Foundation\Controller\PageNotFoundException
+     * @throws \Jitamin\Foundation\Exceptions\PageNotFoundException
      */
     public function index(array $values = [], array $errors = [])
     {
@@ -38,6 +38,25 @@ class CustomFilterController extends Controller
             'project'        => $project,
             'custom_filters' => $this->customFilterModel->getAll($project['id'], $this->userSession->getId()),
             'title'          => t('Custom filters'),
+        ]));
+    }
+
+    /**
+     * Display a form to create a new custom filter.
+     *
+     * @param array $values
+     * @param array $errors
+     *
+     * @throws PageNotFoundException
+     */
+    public function create(array $values = [], array $errors = [])
+    {
+        $project = $this->getProject();
+
+        $this->response->html($this->template->render('project/custom_filter/create', [
+            'project' => $project,
+            'values'  => $values + ['project_id' => $project['id']],
+            'errors'  => $errors,
         ]));
     }
 
@@ -100,8 +119,8 @@ class CustomFilterController extends Controller
      * @param array $values
      * @param array $errors
      *
-     * @throws AccessForbiddenException
-     * @throws \Jitamin\Foundation\Controller\PageNotFoundException
+     * @throws \Jitamin\Foundation\Exceptions\AccessForbiddenException
+     * @throws \Jitamin\Foundation\Exceptions\PageNotFoundException
      */
     public function edit(array $values = [], array $errors = [])
     {

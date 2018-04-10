@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Jitamin\Controller\Manage;
+namespace Jitamin\Http\Controllers\Manage;
 
-use Jitamin\Controller\Controller;
-use Jitamin\Foundation\Controller\AccessForbiddenException;
+use Jitamin\Foundation\Exceptions\AccessForbiddenException;
 use Jitamin\Foundation\Security\Role;
+use Jitamin\Http\Controllers\Controller;
 
 /**
  * Project Permission Controller.
@@ -91,13 +91,23 @@ class ProjectPermissionController extends Controller
         $project = $this->getProject();
         $user_id = $this->request->getIntegerParam('user_id');
 
-        if ($this->projectUserRoleModel->removeUser($project['id'], $user_id)) {
-            $this->flash->success(t('Project updated successfully.'));
-        } else {
-            $this->flash->failure(t('Unable to update this project.'));
+        $user = $this->projectUserRoleModel->getRemoveUser($project['id'], $user_id);
+
+        if ($this->request->isPost()) {
+            $this->request->checkCSRFToken();
+            if ($this->projectUserRoleModel->removeUser($project['id'], $user['id'])) {
+                $this->flash->success(t('Project updated successfully.'));
+            } else {
+                $this->flash->failure(t('Unable to update this project.'));
+            }
+
+            return $this->response->redirect($this->helper->url->to('Manage/ProjectPermissionController', 'index', ['project_id' => $project['id']]));
         }
 
-        $this->response->redirect($this->helper->url->to('Manage/ProjectPermissionController', 'index', ['project_id' => $project['id']]));
+        return $this->response->html($this->helper->layout->app('manage/project_permission/remove_user', [
+            'user'    => $user,
+            'project' => $project,
+        ]));
     }
 
     /**
@@ -127,7 +137,7 @@ class ProjectPermissionController extends Controller
             $values['group_id'] = $this->groupModel->getOrCreateExternalGroupId($values['name'], $values['external_id']);
         }
 
-        if ($this->projectGroupRoleModel->addGroup($project['id'], $values['group_id'], $values['role'])) {
+        if (!empty($values['group_id']) && $this->projectGroupRoleModel->addGroup($project['id'], $values['group_id'], $values['role'])) {
             $this->flash->success(t('Project updated successfully.'));
         } else {
             $this->flash->failure(t('Unable to update this project.'));

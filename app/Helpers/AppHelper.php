@@ -166,10 +166,17 @@ class AppHelper extends Base
     /**
      * Get default view of project.
      *
+     * @param string $slug
+     * @param bool   $forController
+     *
      * @return array
      */
     public function getProjectDefaultView($slug = '', $forController = false)
     {
+        if ($slug === null) {
+            $slug = $this->setting('project_view', null);
+        }
+
         switch ($slug) {
             case 'gantt':
                 $controller = 'Task/TaskController';
@@ -191,13 +198,15 @@ class AppHelper extends Base
                 $controller = 'Project/ProjectController';
                 $action = 'overview';
         }
-        $controller = $forController ? 'Jitamin\\Controller\\'.str_replace('/', '\\', $controller) : $controller;
+        $controller = $forController ? 'Jitamin\\Http\\Controllers\\'.str_replace('/', '\\', $controller) : $controller;
 
         return [$controller, $action];
     }
 
     /**
      * Get current dashboard.
+     *
+     * @param bool $forController
      *
      * @return array
      */
@@ -230,7 +239,7 @@ class AppHelper extends Base
                 $action = 'index';
         }
 
-        $controller = $forController ? 'Jitamin\\Controller\\'.str_replace('/', '\\', $controller) : $controller;
+        $controller = $forController ? 'Jitamin\\Http\\Controllers\\'.str_replace('/', '\\', $controller) : $controller;
 
         return [$controller, $action];
     }

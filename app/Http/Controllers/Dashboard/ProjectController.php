@@ -9,9 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Jitamin\Controller\Dashboard;
+namespace Jitamin\Http\Controllers\Dashboard;
 
-use Jitamin\Controller\Controller;
+use Jitamin\Http\Controllers\Controller;
+use Jitamin\Model\ProjectModel;
 
 /**
  * Project Controller.
@@ -25,24 +26,39 @@ class ProjectController extends Controller
     {
         $user = $this->getUser();
 
+        $paginator = $this->paginator
+            ->setUrl('Dashboard/ProjectController', 'index', ['pagination' => 'projects', 'user_id' => $user['id']])
+            ->setMax(10)
+            ->setOrder(ProjectModel::TABLE.'.id')
+            ->setDirection('DESC')
+            ->setQuery($this->projectModel->getQueryColumnStats($this->projectPermissionModel->getActiveProjectIds($user['id'])))
+            ->calculateOnlyIf($this->request->getStringParam('pagination') === 'projects');
+
         $this->response->html($this->helper->layout->dashboard('dashboard/project/index', [
-            'title'             => t('Dashboard'),
-            'paginator'         => $this->projectPagination->getDashboardPaginator($user['id'], 'index', 10),
-            'user'              => $user,
+            'title'     => t('My projects'),
+            'paginator' => $paginator,
+            'user'      => $user,
         ]));
     }
 
     /**
-     * My stars.
+     * Starred projects.
      */
     public function starred()
     {
         $user = $this->getUser();
 
+        $paginator = $this->paginator
+            ->setUrl('Dashboard/ProjectController', 'starred', ['pagination' => 'starred', 'user_id' => $user['id']])
+            ->setMax(10)
+            ->setOrder(ProjectModel::TABLE.'.name')
+            ->setQuery($this->projectModel->getQueryColumnStats($this->projectStarModel->getProjectIds($user['id'])))
+            ->calculateOnlyIf($this->request->getStringParam('pagination') === 'starred');
+
         $this->response->html($this->helper->layout->dashboard('dashboard/project/starred', [
-            'title'             => t('My stars'),
-            'paginator'         => $this->starPagination->getDashboardPaginator($user['id'], 'stars', 10),
-            'user'              => $user,
+            'title'     => t('Starred projects'),
+            'paginator' => $paginator,
+            'user'      => $user,
         ]));
     }
 }

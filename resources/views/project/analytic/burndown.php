@@ -6,7 +6,7 @@
     <p class="alert"><?= t('You need at least 2 days of data to show the chart.') ?></p>
 <?php else: ?>
     <section id="analytic-burndown">
-        <div id="chart" data-metrics='<?= json_encode($metrics, JSON_HEX_APOS) ?>' data-date-format="<?= e('%%Y-%%m-%%d') ?>" data-label-total="<?= t('Total for all columns') ?>"></div>
+        <div id="chart" data-metrics='<?= json_encode($metrics, JSON_HEX_APOS) ?>' data-date-format="<?= l('%%Y-%%m-%%d') ?>" data-label-total="<?= t('Total for all columns') ?>"></div>
     </section>
 <?php endif ?>
 
@@ -25,7 +25,7 @@
     </div>
 
     <div class="form-inline-group">
-        <button type="submit" class="btn btn-info"><?= t('Execute') ?></button>
+        <button type="submit" class="btn btn-success"><?= t('Execute') ?></button>
     </div>
 </form>
 

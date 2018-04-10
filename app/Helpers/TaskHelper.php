@@ -100,8 +100,8 @@ class TaskHelper extends Base
     /**
      * Display a select field of tags.
      *
-     * @param array $values Form values
-     * @param array $targs  Form tags
+     * @param array $project Form values
+     * @param array $tags    Form tags
      *
      * @return string
      */
@@ -191,10 +191,10 @@ class TaskHelper extends Base
      * Display a select field of category.
      *
      * @param array $categories
-     * @param array $values     Form values
-     * @param array $errors     Form errors
+     * @param array $values         Form values
+     * @param array $errors         Form errors
      * @param array $attributes
-     * @param bool allow_one_item
+     * @param bool  $allow_one_item
      *
      * @return string
      */
@@ -269,7 +269,11 @@ class TaskHelper extends Base
         if ($project['priority_end'] != $project['priority_start']) {
             $range = range($project['priority_end'], $project['priority_start']);
             $options = array_combine($range, $range);
-            array_walk($options, create_function('&$val', '$val = t(\'P\'.$val);'));
+            array_walk($options, function (&$val) {
+                $val = 'P'.$val;
+
+                return $val;
+            });
             $values += ['priority' => $project['priority_default']];
 
             $html .= $this->helper->form->label(t('Priority'), 'priority');
@@ -405,8 +409,9 @@ class TaskHelper extends Base
         $html = $this->helper->form->label(t('Progress'), 'progress');
         $html .= $this->helper->form->number('progress', $values, $errors, $attributes);
 
-        $html .= '&nbsp;';
-        $html .= '<small>%</small>';
+        $html .= '&nbsp;<small>% ';
+        $html .= '<a href="#" class="progress-assign" data-progress-value="100" title="'.t('Finish this task').'"><i class="fa fa-check"></i> '.t('Finish').'</a>';
+        $html .= '</small>';
 
         return $html;
     }

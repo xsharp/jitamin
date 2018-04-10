@@ -49,7 +49,7 @@ class LayoutHelper extends Base
      *
      * @return string
      */
-    public function profile($template, array $params, $subside = 'profile/subside')
+    public function profile($template, array $params, $subside = 'profile/_partials/subnav')
     {
         if (isset($params['user'])) {
             $params['title'] = '#'.$params['user']['id'].' '.($params['user']['name'] ?: $params['user']['username']);
@@ -150,16 +150,17 @@ class LayoutHelper extends Base
      *
      * @param string $template
      * @param array  $params
+     * @param string $subside
      *
      * @return string
      */
-    public function analytic($template, array $params)
+    public function analytic($template, array $params, $subside = 'project/analytic/_partials/subside')
     {
         if (isset($params['project']['name'])) {
             $params['title'] = $params['project']['name'].' &raquo; '.$params['title'];
         }
 
-        return $this->subLayout('analytic/layout', 'analytic/subside', $template, $params);
+        return $this->subLayout('project/analytic/layout', $subside, $template, $params);
     }
 
     /**
